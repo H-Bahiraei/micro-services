@@ -1,0 +1,82 @@
+version: '2.1'
+services:
+  mariadb:
+    image: mariadb:latest
+    ports:
+      - "3366:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: password
+    #    restart: always
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      backend:
+        aliases:
+          - "database"
+    healthcheck:
+      test: "/etc/init.d/mysql status"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis:
+    image: redis:latest
+#    restart: always
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass Mani3280@ --loglevel warning
+#    command: redis-server --save 60 1 --requirepass MDNcVb924a --loglevel warning
+    #    volumes:
+#      - cache:/data
+    networks:
+      backend:
+        aliases:
+          - "redisserver"
+  keycloak:
+    image: jboss/keycloak
+#    restart: always
+    environment:
+      DB_VENDOR: mariadb
+      DB_ADDR: mariadb
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - "8090:8080"
+    networks:
+      backend:
+        aliases:
+          - "keycloak"
+    depends_on:
+      - mariadb
+#  eurekaserver:
+#    image: picher/eurekaserver:0.0.1-SNAPSHOT
+#    ports:
+#      - "8761:8761"
+#    networks:
+#      backend:
+#        aliases:
+#          - "eurekaserver"
+#
+#  otpservice:
+#    image: picher/otp-service:0.0.1-SNAPSHOT
+#    environment:
+#      PROFILE: "dev"
+#      SPRING_PROFILES_ACTIVE: "dev"
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - backend
+networks:
+  backend:
+    driver: bridge
+volumes:
+  cache:
+    driver: local
+  mariadb_data:
+    driver: local
