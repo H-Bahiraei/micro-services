@@ -2,6 +2,7 @@ version: '2.1'
 services:
   mariadb:
     image: mariadb:latest
+    container_name: mariadb
     ports:
       - "3366:3306"
     environment:
@@ -23,20 +24,49 @@ services:
       retries: 5
   redis:
     image: redis:latest
-#    restart: always
+    container_name: redis
+    #    restart: always
     ports:
       - 6379:6379
     command: redis-server --requirepass Mani3280@ --loglevel warning
-#    command: redis-server --save 60 1 --requirepass MDNcVb924a --loglevel warning
+#        command: redis-server --save 60 1 --requirepass MDNcVb924a --loglevel warning
     #    volumes:
-#      - cache:/data
+    #      - cache:/data
     networks:
       backend:
         aliases:
           - "redisserver"
+#  elasticsearch:
+#    container_name: es-container
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.2
+#    environment:
+#      - xpack.security.enabled=false
+#      - "discovery.type=single-node"
+#    volumes:
+#      - elasticsearch-data:/usr/share/elasticsearch/data
+#    networks:
+#      backend:
+#        aliases:
+#           - es-net
+#    ports:
+#      - 9200:9200
+#  kibana:
+#    container_name: kb-container
+#    image: docker.elastic.co/kibana/kibana:7.17.2
+#    environment:
+#      - ELASTICSEARCH_HOSTS=http://es-container:9200
+#    networks:
+#      backend:
+#        aliases:
+#           - es-net-kibana
+#    depends_on:
+#      - elasticsearch
+#    ports:
+#      - 5601:5601
   keycloak:
     image: jboss/keycloak
-#    restart: always
+    container_name: keycloak
+    #    restart: always
     environment:
       DB_VENDOR: mariadb
       DB_ADDR: mariadb
@@ -72,11 +102,54 @@ services:
 #      - "8080:8080"
 #    networks:
 #      - backend
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    container_name: prometheus
+    networks:
+      backend:
+        aliases:
+          - "prometheus"
+  grafana:
+    image: "grafana/grafana:latest"
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    networks:
+      backend:
+        aliases:
+          - "grafana"
+#  zipkin:
+#    image: openzipkin/zipkin
+#    container_name: zipkin
+#    depends_on:
+#      - elasticsearch
+#    environment:
+#      - STORAGE_TYPE=elasticsearch
+#      - "ES_HOSTS=elasticsearch:9300"
+#    ports:
+#      - "9411:9411"
+#    networks:
+#      backend:
+#        aliases:
+#          - "zipkin"
+
 networks:
   backend:
+    driver: bridge
+  es-net:
     driver: bridge
 volumes:
   cache:
     driver: local
   mariadb_data:
+    driver: local
+  elasticsearch-data:
     driver: local

@@ -1,7 +1,9 @@
 package ir.bki.notificationservice.config.feing;
 
+import feign.Logger;
 import feign.RequestInterceptor;
 import feign.auth.BasicAuthRequestInterceptor;
+import feign.okhttp.OkHttpClient;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +25,16 @@ public class FeignClientConfiguration {
     public BasicAuthRequestInterceptor basicAuthRequestInterceptor() {
         return new BasicAuthRequestInterceptor(magfaUsername, magfaPassword);
     }
+    @Bean
+    public OkHttpClient client() {
+        return new OkHttpClient();
+    }
+
+    @Bean
+    Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL ;
+    }
+
 //    @Bean
 //    public RequestInterceptor requestInterceptor() {
 //        return requestTemplate -> {
