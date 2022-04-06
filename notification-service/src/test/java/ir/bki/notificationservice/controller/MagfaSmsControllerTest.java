@@ -38,16 +38,16 @@ class MagfaSmsControllerTest {
         magfaDto.setStatus(0);
         magfaDto.setBalance(new BigInteger(10000+""));
         Mockito.when(magfaFeignClient.getBalance()).thenReturn(magfaDto);
-
         magfaSmsController=new MagfaSmsController(magfaFeignClient);
     }
 
     @Test
     void getBalance() {
-        assertEquals("10000",magfaSmsController.getBalance().getBalance()+"");
+        assertEquals("10000",magfaSmsController.getBalance()+"");
     }
 
     @Test
     void send() {
+        assertEquals("10000",magfaSmsController.send().getBalance()+"");
     }
 }

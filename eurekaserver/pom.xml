@@ -15,7 +15,7 @@
 	<description>Eureka Server</description>
 	<properties>
 		<java.version>11</java.version>
-		<spring-cloud.version>2021.0.1</spring-cloud.version>
+		<spring-cloud.version>2021.0.0</spring-cloud.version>
 		<docker.image.prefix>picher</docker.image.prefix>
 	</properties>
 	<dependencies>

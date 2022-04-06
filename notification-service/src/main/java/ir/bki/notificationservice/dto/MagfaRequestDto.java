@@ -3,7 +3,6 @@ package ir.bki.notificationservice.dto;
 import lombok.Data;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,13 +12,10 @@ import java.util.List;
  * @since 4/3/2022
  */
 @Data
-public class MagfaDto {
-    private Integer status;
-    private BigInteger balance;
-    List<MagfaMessageDto> messages;
+public class MagfaRequestDto {
+
+    List<String> messages;
     List<String>recipients;
-    List<String>senders;
-    List<String>uids;
-    List<String>encoding;
-    List<String>udhs;
+    List<String> senders;
+
 }

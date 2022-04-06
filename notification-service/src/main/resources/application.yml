@@ -1,0 +1,191 @@
+spring:
+  application:
+    name: notification-service
+  profiles:
+    active: dev
+
+server:
+  port: 8082
+  tomcat:
+    threads:
+      max: 15
+#debug: true
+
+
+logging:
+  level:
+    com.netflix: WARN
+    org.springframework:
+      web: DEBUG
+      context: DEBUG
+    com.optimagrowth: DEBUG
+    io.micrometer:
+      elastic: DEBUG
+
+#management.endpoints.web.base-path=/
+management.endpoints.enabled-by-default: false
+#management.endpoint.health:
+#  enabled: true
+#  show-details: always
+
+management:
+  metrics:
+    distribution.percentiles-histogram.http.server.requests: true
+    distribution.percentiles-histogram.http.client.requests: true
+    export:
+      prometheus:
+        enabled: true
+#      elastic:
+#        enabled: true
+#        host: "http://localhost:9200"
+#        auto-create-index: true
+#        step: 30s
+#    #        userName=***
+#    #        password=***
+#    distribution:
+#      percentiles-histogram:
+#        http:
+#          server:
+#            requests: true
+#      sla:
+#        http:
+#          server:
+#            requests: 100ms, 400ms, 500ms, 2000ms
+#      percentiles:
+#        http:
+#          server:
+#            requests: 0.5, 0.75, 0.95, 0.99
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    prometheus:
+      enabled: true
+    health:
+      enabled: true
+      show-details: always
+
+keycloak:
+  realm: Otp-realm
+  auth-server-url: http://127.0.0.1:8090/auth
+  ssl-required: external
+  resource: notification-service
+  credentials:
+    secret: YGJm3RR6tBXsChmE0zTfJ3BgfB44R7KW
+  use-resource-role-mappings: true
+  bearer-only: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      cb-instanceA:
+        failure-rate-threshold: 60  #The Threshold Percentage Above Which the Circuit Breaker will move from Closed to Open State.
+        wait-duration-in-open-state: 5000  #Time in milliseconds, in which the circuit breaker is to stay in open state before moving to half-open state
+        permitted-number-of-calls-in-half-open-state: 10
+        minimum-number-of-calls: 10  #The number of calls after which the error rate is calculated. I have assigned it with a small value for test purpose.
+  ratelimiter:
+    instances:
+      rl-instanceA:
+        limit-for-period: 1 #The Max number of calls that can be done in the time specified by limit-refresh-period
+        limit-refresh-period: 2s #*how long a cycle is.
+        timeout-duration: 0 # The max amount of time a call can last
+  thread-pool-bulkhead:
+    instances:
+      tp-instanceA:
+        queue-capacity: 0 #The number of calls which can be queued if the thread pool is saturated
+        core-thread-pool-size: 2 #The Number of available threads in the Thread Pool.
+  timelimiter:
+    instances:
+      tl-instanceA:
+        timeout-duration: 2s # The max amount of time a call can last
+        cancel-running-future: false #do not cancel the Running Completable Futures After TimeOut.
+  retry:
+    instances:
+      re-instanceA:
+        max-attempts: 3
+        wait-duration: 1s # After this time, the call will be considered a failure and will be retried
+        retry-exceptions: #The List Of Exceptions That Will Trigger a Retry
+          - java.lang.RuntimeException
+          - java.io.IOException
+
+#resilience4j.circuitbreaker:
+#  instances:
+#    MagfaSendSms:
+#      registerHealthIndicator: true
+#      ringBufferSizeInClosedState: 5
+#      ringBufferSizeInHalfOpenState: 3
+#      waitDurationInOpenState: 10s
+#      failureRateThreshold: 50
+#      recordExceptions:
+#        - org.springframework.web.client.HttpServerErrorException
+#        - java.io.IOException
+#        - java.util.concurrent.TimeoutException
+#        - org.springframework.web.client.ResourceAccessException
+#    organizationService:
+#      registerHealthIndicator: true
+#      ringBufferSizeInClosedState: 6
+#      ringBufferSizeInHalfOpenState: 4
+#      waitDurationInOpenState: 20s
+#      failureRateThreshold: 60
+#
+#resilience4j.ratelimiter:
+#  instances:
+#    rateLimitMagfaSendSms:
+#      #At the start of each cycle, the RateLimiter sets the number of active permissions to limitForPeriod
+#      #The number of permissions available during one limit refresh period
+#      #Number of calls duration limitRefresh Period
+#      #*how many free slots there are in a single cycle
+#      limitForPeriod: 1
+#      #Each cycle has a duration configured by limitRefreshPeriod
+#      #The period of a limit refresh. After each period the rate limiter sets its permissions count back to the limitForPeriod value
+#      #How often permission are refreshed
+#      #*how long a cycle is.
+#      limitRefreshPeriod: 1s
+#      #The default wait time a thread waits for a permission
+#      #How long a thread can wait to acquire permission.
+#      timeoutDuration: 1s
+#    rateLimitMagfaGetBalance:
+#      limit-refresh-period: 1
+#      limit-for-period: 1 #The Max number of calls that can be done in the time specified by limit-refresh-period
+#      timeout-duration: 1s # The max amount of time a call can last
+#
+#resilience4j.retry:
+#  instances:
+#    retryMagfaSendSms:
+#      maxRetryAttempts: 5
+#      waitDuration: 10000
+#      retry-exceptions:
+#        - java.util.concurrent.TimeoutException
+#
+#resilience4j.bulkhead:
+#  instances:
+#    bulkheadMagfaSendSms:
+#      maxWaitDuration: 2ms
+#      maxConcurrentCalls: 20
+#
+#
+#resilience4j.thread-pool-bulkhead:
+#  instances:
+#    bulkheadMagfaSendSms:
+#      maxThreadPoolSize: 1
+#      coreThreadPoolSize: 1
+#      queueCapacity: 1
+
+magfa:
+  url: https://sms.magfa.com
+  path: /api/http/sms/v2
+  number: 9830007682
+  test-receiver-list: 989124402951,09133480144
+  username: ekeshavarzi/agri-bank
+  password: QYZJq83uBiNY2D6V
+
+data.exception:
+  message1: BlogAlreadyExists
+  message2: BlogNotFound
+  message3: DataConnectivityisLost
+  notfound: DATA NOT FOUND
+
