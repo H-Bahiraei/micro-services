@@ -51,11 +51,12 @@ public class RedisOtpTokenController {
     }
 
     @PostMapping("/keys/{key}/verification")
-    public ResponseEntity<ResponseDto<String>> verify(@PathVariable("key") String key,@RequestHeader("Code") String code) {
+    public ResponseEntity<ResponseDto<String>> verify(@PathVariable("key") String key,@RequestHeader("Code") String code, HttpServletRequest request) {
         System.err.println("###key = " + key + ", code = " + code);
         List<String> payload = new ArrayList<>();
         long start=System.currentTimeMillis();
         ResponseDto<String> responseDto = new ResponseDto<>(payload);
+        responseDto.setPath(request.getMethod()+" "+request.getRequestURI());
         responseDto.setStatusCode(40401);
         responseDto.setHttpStatus(404);
         responseDto.setMessage("پیدا نشد داداش");

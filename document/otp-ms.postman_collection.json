@@ -1,0 +1,59 @@
+{
+	"info": {
+		"_postman_id": "9cb959f9-bbc9-4924-8d81-758ed0ef7ac5",
+		"name": "otp-ms",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Verifiy SOTP Code",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Code",
+						"value": "84776",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/sotp/keys/09216017504/verification",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sotp",
+						"keys",
+						"09216017504",
+						"verification"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate SOTP code",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/sotp/keys/09216017504/generation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sotp",
+						"keys",
+						"09216017504",
+						"generation"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
