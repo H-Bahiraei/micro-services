@@ -1,5 +1,6 @@
 package ir.bki.notificationservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.math.BigInteger;
@@ -13,6 +14,7 @@ import java.util.List;
  * @since 4/3/2022
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MagfaDto {
     private Integer status;
     private BigInteger balance;

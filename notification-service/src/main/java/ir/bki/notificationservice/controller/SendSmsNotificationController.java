@@ -21,7 +21,7 @@ import java.util.Map;
  * @since 3/26/2022
  */
 @RestController
-@RequestMapping("/mobiles/{mobile-no}")
+@RequestMapping("sms1/mobiles/{mobile-no}")
 public class SendSmsNotificationController {
 
     private final SendNotificationService sendSmsNotificationService;
@@ -39,7 +39,7 @@ public class SendSmsNotificationController {
     @GetMapping("/send")
     @RolesAllowed({"ADMIN", "USER"})
     public ResponseEntity<String> send(@PathVariable("mobile-no") String mobileNo) {//, @RequestBody String messageBody
-        //sendSmsNotificationService.send(mobileNo, messageBody);
+//        sendSmsNotificationService.send(mobileNo, messageBody);
         return ResponseEntity.ok("DONE");
     }
 

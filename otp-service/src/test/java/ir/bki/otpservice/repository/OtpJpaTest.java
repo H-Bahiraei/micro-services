@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class OtpJpaTest {
 
     @Autowired
-    private OtpRepository otpRepository;
+    private OtpDatabaseRepository otpDatabaseRepository;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -40,11 +40,11 @@ public class OtpJpaTest {
                     otpEntity.setUuid(UUID);
                     otpEntity.setKey(KEY.getBytes());
                     otpEntity.setMobileNo(MOBILE_NO);
-                    otpRepository.save(otpEntity);
+                    otpDatabaseRepository.save(otpEntity);
                     return otpEntity.getId();
                 });
             transactionTemplate.execute((ts) -> {
-            OtpEntity otp = otpRepository.findById(otpId).orElseThrow();
+            OtpEntity otp = otpDatabaseRepository.findById(otpId).orElseThrow();
             assertEquals(ID, otp.getId());
             assertEquals(UUID, otp.getUuid());
             assertEquals(MOBILE_NO, otp.getMobileNo());
