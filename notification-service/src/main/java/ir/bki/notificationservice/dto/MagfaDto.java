@@ -18,6 +18,7 @@ import java.util.List;
 public class MagfaDto {
     private Integer status;
     private BigInteger balance;
+    private Long id;
     List<MagfaMessageDto> messages;
     List<String>recipients;
     List<String>senders;

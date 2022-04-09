@@ -4,9 +4,7 @@ import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
-import ir.bki.notificationservice.dto.MagfaDto;
-import ir.bki.notificationservice.dto.MagfaRequestDto;
-import ir.bki.notificationservice.dto.ResponseDto;
+import ir.bki.notificationservice.dto.*;
 import ir.bki.notificationservice.service.client.MagfaFeignClient;
 import ir.bki.notificationservice.utils.UserContextHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +32,9 @@ import java.util.concurrent.TimeoutException;
 public class MagfaSmsController {
 
     private final MagfaFeignClient magfaFeignClient;
+
+    @Value("${magfa.url}")
+    private String url;
 
     @Value("${magfa.test-receiver-list}")
     private List<String> testReceivers;
@@ -68,7 +69,9 @@ public class MagfaSmsController {
                 .body("Too many request - No further calls are accepted");
     }
     @PostMapping("/mobiles/{mobile-no}")
-    public MagfaDto sendOne(@PathVariable("mobile-no") String mobileNo,  @QueryParam("provider") String provider) {
+    public ResponseEntity<ResponseDto<String>> sendOne(@PathVariable("mobile-no") String mobileNo
+            , @RequestBody NotificationRequestDto notificationRequestDto) { //, @QueryParam("provider") String provider
+        System.out.println("####mobileNo = " + mobileNo + ", notificationRequestDto = " + notificationRequestDto);
         List<String> payload = new ArrayList<>();
         ResponseDto<String > responseDto=new ResponseDto<>(payload);
 
@@ -76,10 +79,24 @@ public class MagfaSmsController {
         magfaDto.setRecipients(List.of(mobileNo));
         magfaDto.setSenders(List.of(magfaNumber));
 
-        magfaDto.setMessages(List.of("سلام بچه ها"));
+        magfaDto.setMessages(List.of(notificationRequestDto.getMessage()));
         MagfaDto magfaDto1 = magfaFeignClient.send(magfaDto);
+        MagfaMessageDto magfaMessageDto=null;
+        if(magfaDto1!=null && magfaDto1.getMessages()!=null){
+            magfaMessageDto=magfaDto1.getMessages().get(0);
+            payload.add(magfaMessageDto.getId()+"");
+        }
         System.out.println("#magfaDto1: " + magfaDto1);
-        return magfaFeignClient.send(magfaDto);
+        if(magfaDto1!=null) {
+            responseDto.setStatusCode(magfaDto1.getStatus());
+            if(magfaDto1.getStatus()==0)
+                responseDto.setMessage("موفق");
+        }
+        else {
+            responseDto.setStatusCode(50001);
+            responseDto.setMessage("Cant connect to magfa! "+url);
+        }
+        return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("send")
