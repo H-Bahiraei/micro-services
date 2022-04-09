@@ -144,8 +144,8 @@ services:
 networks:
   backend:
     driver: bridge
-  es-net:
-    driver: bridge
+#  es-net:
+#    driver: bridge
 volumes:
   cache:
     driver: local

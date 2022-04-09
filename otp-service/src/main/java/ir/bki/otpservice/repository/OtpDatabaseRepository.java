@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
  * @since 3/14/2022
  */
 @Repository
-public interface OtpRepository extends JpaRepository<OtpEntity,Long> {
+public interface OtpDatabaseRepository extends JpaRepository<OtpEntity,Long> {
 }

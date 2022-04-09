@@ -6,6 +6,7 @@ import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import ir.bki.notificationservice.dto.MagfaDto;
 import ir.bki.notificationservice.dto.MagfaRequestDto;
+import ir.bki.notificationservice.dto.ResponseDto;
 import ir.bki.notificationservice.service.client.MagfaFeignClient;
 import ir.bki.notificationservice.utils.UserContextHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.QueryParam;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -27,7 +29,7 @@ import java.util.concurrent.TimeoutException;
  */
 //https://reflectoring.io/rate-limiting-with-springboot-resilience4j/
 @RestController
-@RequestMapping("magfa")
+@RequestMapping("sms")
 @Slf4j
 public class MagfaSmsController {
 
@@ -65,11 +67,15 @@ public class MagfaSmsController {
                 .headers(responseHeaders) //send retry header
                 .body("Too many request - No further calls are accepted");
     }
-    @GetMapping("send/{mobile-no}")
-    public MagfaDto sendOne(@PathVariable("mobile-no") String mobileNo) {
+    @PostMapping("/mobiles/{mobile-no}")
+    public MagfaDto sendOne(@PathVariable("mobile-no") String mobileNo,  @QueryParam("provider") String provider) {
+        List<String> payload = new ArrayList<>();
+        ResponseDto<String > responseDto=new ResponseDto<>(payload);
+
         MagfaRequestDto magfaDto = new MagfaRequestDto();
         magfaDto.setRecipients(List.of(mobileNo));
         magfaDto.setSenders(List.of(magfaNumber));
+
         magfaDto.setMessages(List.of("سلام بچه ها"));
         MagfaDto magfaDto1 = magfaFeignClient.send(magfaDto);
         System.out.println("#magfaDto1: " + magfaDto1);

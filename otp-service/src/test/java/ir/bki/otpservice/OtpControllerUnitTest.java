@@ -2,21 +2,15 @@ package ir.bki.otpservice;
 
 import ir.bki.otpservice.controller.OtpController;
 import ir.bki.otpservice.model.OtpEntity;
-import ir.bki.otpservice.service.OtpService;
-import ir.bki.otpservice.service.OtpServiceImpl;
+import ir.bki.otpservice.service.OtpDatabaseServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.mockito.Mockito.when;
 
 /**
  * @author Mahdi Sharifi
@@ -43,7 +37,7 @@ public class OtpControllerUnitTest {
         OtpEntity otpEntity2=new OtpEntity();
         otpEntity2.setId(2L); otpEntity2.setMobileNo(9122480111L);
         list.add(otpEntity2);
-        OtpServiceImpl otpService = Mockito.mock(OtpServiceImpl.class);
+        OtpDatabaseServiceImpl otpService = Mockito.mock(OtpDatabaseServiceImpl.class);
         Mockito.when(otpService.findAll()).thenReturn(list);
 
         OtpController otpController=new OtpController(otpService);

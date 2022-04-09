@@ -1,7 +1,7 @@
 package ir.bki.otpservice.controller;
 
 import ir.bki.otpservice.model.OtpEntity;
-import ir.bki.otpservice.service.OtpServiceImpl;
+import ir.bki.otpservice.service.OtpDatabaseServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +20,9 @@ import java.util.List;
 @RequestMapping("otp")
 public class OtpController {
 
-    private final OtpServiceImpl otpService;
+    private final OtpDatabaseServiceImpl otpService;
 
-    public OtpController(OtpServiceImpl otpService) {
+    public OtpController(OtpDatabaseServiceImpl otpService) {
         this.otpService = otpService;
     }
     //-------------- Business Method -------------------
