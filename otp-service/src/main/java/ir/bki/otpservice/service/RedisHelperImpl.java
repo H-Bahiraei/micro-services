@@ -69,7 +69,7 @@ public class RedisHelperImpl implements RedisHelper {
     }
     @Override
     public void del(String key) {
-        hashOperations.delete(key);
+        redisTemplate.delete(key);
     }
     @Override
     public void remove(String key) {

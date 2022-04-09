@@ -22,9 +22,11 @@ public interface NotificationServiceFeign {
 
     @RequestMapping(
             method = RequestMethod.POST,
-            value = "/mobiles/{mobile-no}"
+            value = "/sms/mobiles/{mobile-no}"
             , consumes = "application/json",
             produces = "application/json"
     )
-    ResponseDto<String> send(@PathVariable("mobile-no") String mobileNo, @RequestBody NotificationRequestDto body);
+    ResponseDto<String> send(@PathVariable("mobile-no") String mobileNo
+                           , @RequestBody NotificationRequestDto notificationRequestDto);
+    //(@PathVariable("mobile-no") String mobileNo,  @QueryParam("provider") String provider)
 }

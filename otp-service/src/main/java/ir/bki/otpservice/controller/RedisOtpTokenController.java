@@ -6,10 +6,7 @@ import ir.bki.otpservice.model.NotificationRequestDto;
 import ir.bki.otpservice.model.ResponseDto;
 import ir.bki.otpservice.service.StrongAuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.HeaderParam;
@@ -24,7 +21,7 @@ import java.util.List;
  * @since 4/5/2022
  */
 @RestController
-@RequestMapping("redis2")
+@RequestMapping("sotp")
 //https://developer.redis.com/develop/java/redis-and-spring-course/lesson_2/
 public class RedisOtpTokenController {
 
@@ -36,39 +33,49 @@ public class RedisOtpTokenController {
         this.notificationServiceFeign = notificationServiceFeign;
     }
 
-    @GetMapping("{key}/create")
+    @PostMapping("/keys/{key}/generation")
     public ResponseEntity<ResponseDto<String>> generateAndSend(@PathVariable("key") String key, HttpServletRequest request) {
         List<String> payload = new ArrayList<>();
+        long start=System.currentTimeMillis();
         ResponseDto<String> responseDto = new ResponseDto<>(payload);
         responseDto.setPath(request.getMethod()+" "+request.getRequestURI());
         String code = strongAuthService.generateCode();
         strongAuthService.put(key, code);
-        strongAuthService.expire(key, Duration.ofSeconds(30));
-        System.out.println("KEY: " + key + "->" + code);
+        strongAuthService.expire(key, Duration.ofSeconds(5*60));
         payload.add(code);
         NotificationRequestDto notificationRequestDto=new NotificationRequestDto("کد فعالسازی شما: " + "\n"+code);
+        System.out.println("#notificationRequestDto: "+notificationRequestDto);
         notificationServiceFeign.send(key,notificationRequestDto);
+        responseDto.setElapsedTime(System.currentTimeMillis()-start);
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("{key}")
+    @PostMapping("/keys/{key}/verification")
+    public ResponseEntity<ResponseDto<String>> verify(@PathVariable("key") String key,@RequestHeader("Code") String code, HttpServletRequest request) {
+        System.err.println("###key = " + key + ", code = " + code);
+        List<String> payload = new ArrayList<>();
+        long start=System.currentTimeMillis();
+        ResponseDto<String> responseDto = new ResponseDto<>(payload);
+        responseDto.setPath(request.getMethod()+" "+request.getRequestURI());
+        responseDto.setStatusCode(40401);
+        responseDto.setHttpStatus(404);
+        responseDto.setMessage("پیدا نشد داداش");
+        String codeInCache = strongAuthService.get(key);
+        if (code!=null && !"".equals(code) && code.equals(codeInCache)) {
+            responseDto.setStatusCode(0);
+            responseDto.setMessage("موفق");
+            strongAuthService.del(key);
+        }
+        responseDto.setElapsedTime(System.currentTimeMillis()-start);
+        return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
+    }
+
+    @GetMapping("{key}") // TODO Remove on Pro
     public ResponseEntity<ResponseDto<String>> get(@PathVariable("key") String key , HttpServletRequest request) {
         List<String> payload = new ArrayList<>();
         ResponseDto<String> responseDto = new ResponseDto<>(payload);
         responseDto.setPath(request.getMethod()+" "+request.getRequestURI());
         payload.add(strongAuthService.get(key));
-        return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
-    }
-
-    @GetMapping("{key}/verify")
-    public ResponseEntity<ResponseDto<String>> verify(@PathVariable("key") String key, @HeaderParam("Code") String code) {
-        List<String> payload = new ArrayList<>();
-        ResponseDto<String> responseDto = new ResponseDto<>(payload);
-        String codeInCache = strongAuthService.get(key);
-        if (code.equals(codeInCache)) {
-            responseDto.setStatusCode(40001);
-            responseDto.setStatusCode(400);
-        }
         return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
     }
 
