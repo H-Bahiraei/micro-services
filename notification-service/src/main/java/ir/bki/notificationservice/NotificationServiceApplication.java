@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 @SpringBootApplication
-//@EnableDiscoveryClient
+@EnableDiscoveryClient
 @EnableFeignClients
 @EnableEurekaClient
 public class NotificationServiceApplication {

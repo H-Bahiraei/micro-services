@@ -84,15 +84,16 @@ services:
           - "keycloak"
     depends_on:
       - mariadb
-#  eurekaserver:
-#    image: picher/eurekaserver:0.0.1-SNAPSHOT
-#    ports:
-#      - "8761:8761"
-#    networks:
-#      backend:
-#        aliases:
-#          - "eurekaserver"
-#
+  eurekaserver:
+    image: picher/eurekaserver:0.0.1-SNAPSHOT
+    container_name: eurekaserver
+    ports:
+      - "8761:8761"
+    networks:
+      backend:
+        aliases:
+          - "eurekaserver"
+
 #  otpservice:
 #    image: picher/otp-service:0.0.1-SNAPSHOT
 #    environment:
@@ -102,6 +103,21 @@ services:
 #      - "8080:8080"
 #    networks:
 #      - backend
+
+  notification-service:
+    image: picher/notification-service:0.0.1-SNAPSHOT
+    container_name: notification-service
+    environment:
+      PROFILE: "dev"
+      SPRING_PROFILES_ACTIVE: "dev"
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eurekaserver
+    networks:
+      backend:
+        aliases:
+          - "notification-service"
 
   prometheus:
     image: prom/prometheus:latest
