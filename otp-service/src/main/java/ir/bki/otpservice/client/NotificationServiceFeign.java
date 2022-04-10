@@ -22,7 +22,7 @@ public interface NotificationServiceFeign {
 
     @RequestMapping(
             method = RequestMethod.POST,
-            value = "/sms/mobiles/{mobile-no}"
+            value = "/mobiles/{mobile-no}"
             , consumes = "application/json",
             produces = "application/json"
     )

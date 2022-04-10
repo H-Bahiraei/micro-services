@@ -3,9 +3,7 @@ package ir.bki.otpservice.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.sun.istack.NotNull;
 import ir.bki.otpservice.util.JSONFormatter;
 import lombok.Data;
 
@@ -22,8 +20,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseDto<T>  {
 
-    @JsonProperty("status_code")
-    private int statusCode;
+    @JsonProperty("status")
+    private int status;
     private String message;
     private  String path;//transient
     @JsonProperty("information_link")
@@ -55,9 +53,9 @@ public class ResponseDto<T>  {
 //    }
 //    ]
 
-
+    @JsonIgnore
     public int getHttpStatus() {
-        if (statusCode==0) return 200;
+        if (status ==0) return 200;
         return httpStatus;
     }
 
@@ -71,14 +69,14 @@ public class ResponseDto<T>  {
         httpStatus=200;
     }
 
-    public ResponseDto(int statusCode) {
-        this.statusCode = statusCode;
+    public ResponseDto(int status) {
+        this.status = status;
         elapsedTime=System.currentTimeMillis();
     }
 
-//    public boolean isSuccess(){
-//        return (statusCode==0 || (httpStatus>=200 && httpStatus<=299) );
-//    }
+    public boolean isSuccess(){
+        return (status ==0 || (httpStatus>=200 && httpStatus<=299) );
+    }
 
     public static void main(String[] args) {
         ResponseDto responseDto=new ResponseDto();
@@ -88,7 +86,7 @@ public class ResponseDto<T>  {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("ResponseDto{");
-        sb.append("statusCode=").append(statusCode);
+        sb.append("statusCode=").append(status);
         sb.append(", message='").append(message).append('\'');
         sb.append(", httpStatus=").append(httpStatus);
         sb.append(", count=").append(count);
