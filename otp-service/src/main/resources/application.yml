@@ -12,5 +12,5 @@ spring:
 
 notification-service:
   url: http://localhost:8082
-  path:
+  path: /v1/sms
 

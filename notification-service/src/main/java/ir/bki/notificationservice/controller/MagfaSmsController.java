@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
  */
 //https://reflectoring.io/rate-limiting-with-springboot-resilience4j/
 @RestController
-@RequestMapping("sms")
+@RequestMapping("v1/sms")
 @Slf4j
 public class MagfaSmsController {
 
@@ -71,7 +71,7 @@ public class MagfaSmsController {
     @PostMapping("/mobiles/{mobile-no}")
     public ResponseEntity<ResponseDto<String>> sendOne(@PathVariable("mobile-no") String mobileNo
             , @RequestBody NotificationRequestDto notificationRequestDto) { //, @QueryParam("provider") String provider
-        System.out.println("####mobileNo = " + mobileNo + ", notificationRequestDto = " + notificationRequestDto);
+        System.err.println("####mobileNo = " + mobileNo + ", notificationRequestDto = " + notificationRequestDto);
         List<String> payload = new ArrayList<>();
         ResponseDto<String > responseDto=new ResponseDto<>(payload);
 

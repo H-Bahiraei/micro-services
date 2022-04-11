@@ -60,6 +60,9 @@ public class StrongAuthService implements StrongAuth {
     public String generateCode(int length) {
         return RandomStringUtils.randomNumeric(length);//String.valueOf(new Random().nextInt(89999) + 10001);
     }
+    public String generateStringRandom(int length) {
+        return RandomStringUtils.randomAlphanumeric(length);
+    }
 
     public Map<Object, Object> findAllOtpToken(String key) {
         return hashOperations.entries(key);
