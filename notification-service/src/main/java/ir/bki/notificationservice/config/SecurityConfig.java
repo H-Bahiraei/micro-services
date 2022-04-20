@@ -40,6 +40,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .csrf()
                 .disable();
     }
+
     //In the code above, the method configureGlobal() tasks the SimpleAuthorityMapper to make sure roles are not prefixed with ROLE_.
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -47,6 +48,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
         auth.authenticationProvider(keycloakAuthenticationProvider);
     }
+
     //Define a session authentication strategy
     @Bean
     @Override

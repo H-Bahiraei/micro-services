@@ -1,9 +1,5 @@
 package ir.bki.notificationservice.config;
 
-import io.github.resilience4j.common.circuitbreaker.configuration.CircuitBreakerConfigCustomizer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 /**
  * @author Mahdi Sharifi
  * @version 2022.1.1

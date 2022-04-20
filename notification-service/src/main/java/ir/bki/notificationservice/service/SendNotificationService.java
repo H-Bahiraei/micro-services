@@ -7,6 +7,7 @@ package ir.bki.notificationservice.service;
  * @since 3/26/2022
  */
 public interface SendNotificationService {
-    public long send(String mobileNo,String message);
+    public long send(String mobileNo, String message);
+
     public long getBalance(String smsCenter);
 }

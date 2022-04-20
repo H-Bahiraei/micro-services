@@ -2,20 +2,14 @@ package ir.bki.notificationservice.controller;
 
 import ir.bki.notificationservice.dto.MagfaDto;
 import ir.bki.notificationservice.service.client.MagfaFeignClient;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigInteger;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mahdi Sharifi
@@ -34,11 +28,11 @@ class MagfaSmsControllerTest {
 
     @BeforeEach
     void setUp() {
-        MagfaDto magfaDto=new MagfaDto();
+        MagfaDto magfaDto = new MagfaDto();
         magfaDto.setStatus(0);
-        magfaDto.setBalance(new BigInteger(10000+""));
+        magfaDto.setBalance(new BigInteger(10000 + ""));
         Mockito.when(magfaFeignClient.getBalance()).thenReturn(magfaDto);
-        magfaSmsController=new MagfaSmsController(magfaFeignClient);
+        magfaSmsController = new MagfaSmsController(magfaFeignClient);
     }
 
 //    @Test

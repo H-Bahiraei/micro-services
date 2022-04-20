@@ -1,6 +1,5 @@
 package ir.bki.notificationservice.ratelimit;
 
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**

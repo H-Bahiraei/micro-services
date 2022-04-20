@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--    defines the home address for log files-->
+    <property name="HOME_LOG" value="d:/logs/"/>
+
+    <!--    to write logs in console-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d %green([%thread]) %highlight(%level) %logger{50} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+    <!--    <logger name="console.logger" level="DEBUG" additivity="false">-->
+    <!--        <appender-ref ref="CONSOLE"/>-->
+    <!--    </logger>-->
+
+    <!--application root logger-->
+    <appender name="ROOT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG}/root.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/archived/root.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="ROOT" level="INFO" additivity="false">
+        <appender-ref ref="ROOT"/>
+    </logger>
+
+    <!--    magfa logger-->
+    <appender name="magfa" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG}/magfa/magfa.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/archived/magfa.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="magfa" level="INFO" additivity="false">
+        <appender-ref ref="magfa"/>
+    </logger>
+
+    <!--    HTTP Request Response logger-->
+    <appender name="http" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG}/http/req_res.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/archived/req_res.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="http" level="INFO" additivity="false">
+        <appender-ref ref="http"/>
+    </logger>
+
+    <!--    defines what log in root-->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ROOT"/>
+    </root>
+
+</configuration>

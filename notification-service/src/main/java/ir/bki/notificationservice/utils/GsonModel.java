@@ -19,12 +19,15 @@ public class GsonModel {
     public String toJSON() {
         return JSONFormatter.toJSON(this);
     }
+
     public String toJSON(Gson gson) {
-        return JSONFormatter.toJSON(gson,this);
+        return JSONFormatter.toJSON(gson, this);
     }
+
     public String toJSONNormal() {
         return JSONFormatter.toJSONNormal(this);
     }
+
     public String toJSONFull() {
         return JSONFormatter.toJSONFull(this);
     }
@@ -33,7 +36,8 @@ public class GsonModel {
         return JSONFormatter.toJSONFaster(this);
     }
 
-    public Map toMAP() {return JSONFormatter.toMap(this);
+    public Map toMAP() {
+        return JSONFormatter.toMap(this);
     }
 
     @Override

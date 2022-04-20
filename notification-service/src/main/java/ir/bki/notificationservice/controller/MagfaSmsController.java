@@ -5,16 +5,18 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import ir.bki.notificationservice.dto.*;
+import ir.bki.notificationservice.log.LoggerNamesEnum;
 import ir.bki.notificationservice.service.client.MagfaFeignClient;
 import ir.bki.notificationservice.utils.UserContextHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.QueryParam;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -30,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 @RequestMapping("v1/sms")
 @Slf4j
 public class MagfaSmsController {
+   private static final Logger MAGFA_LOGGER = LoggerFactory.getLogger(LoggerNamesEnum.MAGFA.getDesc());
 
     private final MagfaFeignClient magfaFeignClient;
 
@@ -59,8 +62,8 @@ public class MagfaSmsController {
         return ResponseEntity.ok(magfaFeignClient.getBalance());
     }
 
-    public ResponseEntity buildFallbackBalance( String name, Throwable ex) {
-        System.err.println("####Rate limit applied no further calls are accepted "+name+" ;ex: "+ex.getMessage());
+    public ResponseEntity buildFallbackBalance(String name, Throwable ex) {
+        System.err.println("####Rate limit applied no further calls are accepted " + name + " ;ex: " + ex.getMessage());
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Retry-After", "1"); //retry after one second
 
@@ -68,12 +71,13 @@ public class MagfaSmsController {
                 .headers(responseHeaders) //send retry header
                 .body("Too many request - No further calls are accepted");
     }
+
     @PostMapping("/mobiles/{mobile-no}")
     public ResponseEntity<ResponseDto<String>> sendOne(@PathVariable("mobile-no") String mobileNo
             , @RequestBody NotificationRequestDto notificationRequestDto) { //, @QueryParam("provider") String provider
-        System.err.println("####mobileNo = " + mobileNo + ", notificationRequestDto = " + notificationRequestDto);
+        MAGFA_LOGGER.info("mobileNo = " + mobileNo + ", notificationRequestDto = " + notificationRequestDto);
         List<String> payload = new ArrayList<>();
-        ResponseDto<String > responseDto=new ResponseDto<>(payload);
+        ResponseDto<String> responseDto = new ResponseDto<>(payload);
 
         MagfaRequestDto magfaDto = new MagfaRequestDto();
         magfaDto.setRecipients(List.of(mobileNo));
@@ -81,20 +85,19 @@ public class MagfaSmsController {
 
         magfaDto.setMessages(List.of(notificationRequestDto.getMessage()));
         MagfaDto magfaDto1 = magfaFeignClient.send(magfaDto);
-        MagfaMessageDto magfaMessageDto=null;
-        if(magfaDto1!=null && magfaDto1.getMessages()!=null){
-            magfaMessageDto=magfaDto1.getMessages().get(0);
-            payload.add(magfaMessageDto.getId()+"");
+        MagfaMessageDto magfaMessageDto;
+        if (magfaDto1 != null && magfaDto1.getMessages() != null) {
+            magfaMessageDto = magfaDto1.getMessages().get(0);
+            payload.add(magfaMessageDto.getId() + "");
         }
-        System.out.println("#magfaDto1: " + magfaDto1);
-        if(magfaDto1!=null) {
+        MAGFA_LOGGER.debug("#magfaDto1: " + magfaDto1);
+        if (magfaDto1 != null) {
             responseDto.setStatusCode(magfaDto1.getStatus());
-            if(magfaDto1.getStatus()==0)
+            if (magfaDto1.getStatus() == 0)
                 responseDto.setMessage("موفق");
-        }
-        else {
+        } else {
             responseDto.setStatusCode(50001);
-            responseDto.setMessage("Cant connect to magfa! "+url);
+            responseDto.setMessage("Cant connect to magfa! " + url);
         }
         return ResponseEntity.ok(responseDto);
     }
@@ -103,9 +106,8 @@ public class MagfaSmsController {
     public MagfaDto send() {
         MagfaRequestDto magfaDto = new MagfaRequestDto();
         magfaDto.setRecipients(testReceivers);
-//        magfaDto.setRecipients(List.of("09133480144", "989124402951"));
         magfaDto.setSenders(List.of(magfaNumber));
-        magfaDto.setMessages(List.of("سلام بچه ها"));
+        magfaDto.setMessages(List.of("سلام Notification service"));
         MagfaDto magfaDto1 = magfaFeignClient.send(magfaDto);
         System.out.println("#magfaDto1: " + magfaDto1);
         return magfaFeignClient.send(magfaDto);
@@ -120,7 +122,7 @@ public class MagfaSmsController {
     @CircuitBreaker(name = "magfaSendSms", fallbackMethod = "buildFallbackLicenseList")
     @RateLimiter(name = "rateLimitMagfaSendSms", fallbackMethod = "buildFallbackLicenseList")
     @Retry(name = "retryMagfaSendSms", fallbackMethod = "buildFallbackLicenseList")
-    @Bulkhead(name = "bulkheadMagfaSendSms", type= Bulkhead.Type.THREADPOOL, fallbackMethod = "buildFallbackLicenseList")
+    @Bulkhead(name = "bulkheadMagfaSendSms", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "buildFallbackLicenseList")
     public ResponseEntity<String> getLicensesByOrganization(String mobileNo) throws TimeoutException {
 //        if("09133480144".equals(mobileNo))
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

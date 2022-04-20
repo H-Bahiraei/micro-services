@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,13 +15,13 @@ import java.util.List;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MagfaDto {
+    List<MagfaMessageDto> messages;
+    List<String> recipients;
+    List<String> senders;
+    List<String> uids;
+    List<String> encoding;
+    List<String> udhs;
     private Integer status;
     private BigInteger balance;
     private Long id;
-    List<MagfaMessageDto> messages;
-    List<String>recipients;
-    List<String>senders;
-    List<String>uids;
-    List<String>encoding;
-    List<String>udhs;
 }

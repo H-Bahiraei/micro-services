@@ -27,11 +27,12 @@ class ProductController {
     }
 
     @GetMapping(path = "/products")
-    public String getProducts(Principal principal, Model model){
-        model.addAttribute("principal",principal);
+    public String getProducts(Principal principal, Model model) {
+        model.addAttribute("principal", principal);
         model.addAttribute("products", productService.getProducts());
         return "product";
     }
+
     @GetMapping(path = "/logout")
     public String logout(HttpServletRequest request) throws ServletException {
         request.logout();

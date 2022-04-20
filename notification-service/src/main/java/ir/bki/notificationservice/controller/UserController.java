@@ -1,21 +1,16 @@
 package ir.bki.notificationservice.controller;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * @author Mahdi Sharifi
@@ -25,16 +20,16 @@ import java.util.Collections;
  */
 //https://www.springcloud.io/post/2022-02/keycloak-manager-api/#gsc.tab=0
 //https://stackoverflow.com/questions/51521958/keycloak-create-realms-users-groups-programmatically
-    //https://lists.jboss.org/pipermail/keycloak-user/2017-June/010944.html
-    //https://www.n-k.de/2016/08/keycloak-admin-client.html
-    //http://127.0.0.1:8090/auth/admin/realms/otp-realm/users/count
-    //http://www.keycloak.org/docs/latest/authorization_services/index.html
+//https://lists.jboss.org/pipermail/keycloak-user/2017-June/010944.html
+//https://www.n-k.de/2016/08/keycloak-admin-client.html
+//http://127.0.0.1:8090/auth/admin/realms/otp-realm/users/count
+//http://www.keycloak.org/docs/latest/authorization_services/index.html
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @GetMapping
-    public String createUser(){
+    public String createUser() {
         System.out.println("###UserController##########");
         // User "idm-admin" needs at least "manage-users, view-clients, view-realm, view-users" roles for "realm-management"
         Keycloak kc = KeycloakBuilder.builder()
@@ -46,7 +41,6 @@ public class UserController {
                 .clientId("admin-cli")
                 .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
                 .build();
-
 
 
 //        // Define user

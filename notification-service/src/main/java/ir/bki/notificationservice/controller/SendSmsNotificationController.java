@@ -5,14 +5,15 @@ import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.IDToken;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
-import java.util.Map;
 
 /**
  * @author Mahdi Sharifi
@@ -52,7 +53,7 @@ public class SendSmsNotificationController {
 
         final Principal principal = (Principal) authentication.getPrincipal();
 
-        System.out.println("##principal: "+principal.getName()+";principal: "+principal);
+        System.out.println("##principal: " + principal.getName() + ";principal: " + principal);
 
         if (principal instanceof KeycloakPrincipal) {
 
@@ -61,15 +62,15 @@ public class SendSmsNotificationController {
 //
 //            Map<String, Object> customClaims = token.getOtherClaims();
 
-            System.out.println("#token: "+token);
-            System.out.println("#Realm: "+kPrincipal.getKeycloakSecurityContext().getRealm());
-            System.out.println("#Name: "+kPrincipal.getKeycloakSecurityContext().getToken().getName());
-            System.out.println("#Email: "+kPrincipal.getKeycloakSecurityContext().getToken().getEmail());
-            System.out.println("#Subject: "+kPrincipal.getKeycloakSecurityContext().getToken().getSubject());
-            System.out.println("#PreferredUsername: "+kPrincipal.getKeycloakSecurityContext().getToken().getPreferredUsername());
-            System.out.println("#RealmAccess: "+kPrincipal.getKeycloakSecurityContext().getToken().getRealmAccess().getRoles());
+            System.out.println("#token: " + token);
+            System.out.println("#Realm: " + kPrincipal.getKeycloakSecurityContext().getRealm());
+            System.out.println("#Name: " + kPrincipal.getKeycloakSecurityContext().getToken().getName());
+            System.out.println("#Email: " + kPrincipal.getKeycloakSecurityContext().getToken().getEmail());
+            System.out.println("#Subject: " + kPrincipal.getKeycloakSecurityContext().getToken().getSubject());
+            System.out.println("#PreferredUsername: " + kPrincipal.getKeycloakSecurityContext().getToken().getPreferredUsername());
+            System.out.println("#RealmAccess: " + kPrincipal.getKeycloakSecurityContext().getToken().getRealmAccess().getRoles());
 
         }
-        return sendSmsNotificationService.getBalance("SMS CENTER NUMBER")+"";
+        return sendSmsNotificationService.getBalance("SMS CENTER NUMBER") + "";
     }
 }

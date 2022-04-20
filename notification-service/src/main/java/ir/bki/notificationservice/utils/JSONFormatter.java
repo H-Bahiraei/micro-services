@@ -18,8 +18,6 @@ import java.util.Map;
  */
 public final class JSONFormatter {
     public static final String PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSXX";
-    private static SimpleDateFormat sdf;
-
     /**
      * FieldNamingPolicy used by the underlying Gson library. Alter this
      * property to set a fieldnamingpolicy other than
@@ -30,12 +28,12 @@ public final class JSONFormatter {
      * Gson
      */
     public static Gson GSON = new GsonBuilder()
-              .setPrettyPrinting()
+            .setPrettyPrinting()
             .setFieldNamingPolicy(FIELD_NAMING_POLICY).create();
-
     public static Gson GSON_FULL = new GsonBuilder()
             .setPrettyPrinting()
             .setFieldNamingPolicy(FIELD_NAMING_POLICY).create();
+    private static SimpleDateFormat sdf;
 
     /*
      * JSONFormatter is coupled to the stubs generated using the SDK generator.

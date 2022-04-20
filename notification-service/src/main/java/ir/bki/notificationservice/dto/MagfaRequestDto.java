@@ -3,7 +3,6 @@ package ir.bki.notificationservice.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -17,7 +16,7 @@ import java.util.List;
 public class MagfaRequestDto {
 
     List<String> messages;
-    List<String>recipients;
+    List<String> recipients;
     List<String> senders;
 
 }

@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class DemoService {
 
-    @CircuitBreaker(name = "cb-instanceA",fallbackMethod = "cbFallBack")
+    @CircuitBreaker(name = "cb-instanceA", fallbackMethod = "cbFallBack")
     public String circuitBreaker() {
         return cbRemoteCall();
     }
@@ -34,14 +34,14 @@ public class DemoService {
     }
 
     public String cbFallBack(Exception exception) {
-        return String.format("Fallback Execution for Circuit Breaker. Error Message: %s\n",exception.getMessage());
+        return String.format("Fallback Execution for Circuit Breaker. Error Message: %s\n", exception.getMessage());
     }
 
     public String rateLimiterFallBack(Exception exception) {
-        return String.format("Fallback Execution for rateLimiter. Error Message: %s\n",exception.getMessage());
+        return String.format("Fallback Execution for rateLimiter. Error Message: %s\n", exception.getMessage());
     }
 
-    @RateLimiter(name = "rl-instanceA" ,fallbackMethod = "rateLimiterFallBack")
+    @RateLimiter(name = "rl-instanceA", fallbackMethod = "rateLimiterFallBack")
     public String rateLimiter() {
         return "Executing Rate Limited Method";
     }
@@ -79,16 +79,16 @@ public class DemoService {
             throw new RuntimeException("Retry Remote Call Fails");
         }
 
-        return  "Executing Retry Remote Call";
+        return "Executing Retry Remote Call";
     }
 
     public String bulkHeadFallBack(Exception exception) {
-        return String.format("Fallback Execution for Bulkhead. Error Message: %s\n",exception.getMessage());
+        return String.format("Fallback Execution for Bulkhead. Error Message: %s\n", exception.getMessage());
     }
 
-    @Bulkhead(name = "tp-instanceA", type = Bulkhead.Type.THREADPOOL,fallbackMethod = "bulkHeadFallBack")
+    @Bulkhead(name = "tp-instanceA", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "bulkHeadFallBack")
     public String bulkHead() {
-        System.err.println("#Thread-> "+Thread.currentThread().getName());
+        System.err.println("#Thread-> " + Thread.currentThread().getName());
         return "Executing Bulk Head Remote call";
     }
 }

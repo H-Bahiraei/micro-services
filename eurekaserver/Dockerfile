@@ -6,7 +6,7 @@ FROM openjdk:11-slim as build
 LABEL maintainer="Mahdi Sharifi <mahdi.elu@gmail.com>"
 
 # The application's jar file
-ARG JAR_FILE
+ARG JAR_FILE=target/*.jar
 
 # Add the application's jar to the container
 COPY ${JAR_FILE} eureka.jar

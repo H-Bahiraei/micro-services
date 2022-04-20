@@ -1,12 +1,23 @@
 global:
-  scrape_interval:     5s # Set the scrape interval to every 5 seconds.
+  scrape_interval: 5s # Set the scrape interval to every 5 seconds.
   evaluation_interval: 5s # Evaluate rules every 5 seconds.
 scrape_configs:
   - job_name: 'notification-service'
     metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
     static_configs:
-#    - targets: ['Sharifi-2G.agri-bank.com:8082']
-    - targets: ['notification-service:8082']
+      - targets: [ 'notification-service:8082' ]
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: [ 'localhost:9090' ]
+#
+#  - job_name: 'spring-actuator'
+#      metrics_path: '/actuator/prometheus'
+#      scrape_interval: 5s
+#      static_configs:
+#        - targets: [ 'localhost:8082' ]
+
 #  - job_name: 'organizationservice'
 #    metrics_path: '/actuator/prometheus'
 #    static_configs:

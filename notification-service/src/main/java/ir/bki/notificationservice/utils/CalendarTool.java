@@ -19,28 +19,18 @@ import java.util.GregorianCalendar;
  */
 public class CalendarTool {
 
+    private static CalendarTool _Instance;
     private int irYear; // Year part of a Iranian date
-
     private int irMonth; // Month part of a Iranian date
-
     private int irDay; // Day part of a Iranian date
-
     private int gYear; // Year part of a Gregorian date
-
     private int gMonth; // Month part of a Gregorian date
-
     private int gDay; // Day part of a Gregorian date
-
     private int juYear; // Year part of a Julian date
-
     private int juMonth; // Month part of a Julian date
-
     private int juDay; // Day part of a Julian date
-
     private int leap; // Number of years since the last leap year (0 to 4)
-
     private int JDN; // Julian Day Number
-
     private int march; // The march day of Farvardin the first (First day of jaYear)
 
     /**
@@ -55,17 +45,6 @@ public class CalendarTool {
                 calendar.get(Calendar.DAY_OF_MONTH));
     }
 
-    private void dsad() {
-        setGregorianDate(1390, 2, 1);
-    }
-
-    private static CalendarTool _Instance;
-
-    public static CalendarTool get_Instance() {
-        if (_Instance == null) _Instance = new CalendarTool();
-        return _Instance;
-    }
-
     /**
      * JavaSource_Calendar: This constructor receives a Gregorian date and
      * initializes the other private members of the class accordingly.
@@ -76,6 +55,15 @@ public class CalendarTool {
      */
     public CalendarTool(int year, int month, int day) {
         setGregorianDate(year, month, day);
+    }
+
+    public static CalendarTool get_Instance() {
+        if (_Instance == null) _Instance = new CalendarTool();
+        return _Instance;
+    }
+
+    private void dsad() {
+        setGregorianDate(1390, 2, 1);
     }
 
     /**
@@ -133,10 +121,11 @@ public class CalendarTool {
      * @return String
      */
     public String getIranianDate() {
-        return getIranianDate( "/");
+        return getIranianDate("/");
     }
+
     public String getIranianDate(String separator) {
-        return (padd(irYear + "", 4)  + separator + padd(irMonth + "", 2) + separator + padd(irDay + "", 2));
+        return (padd(irYear + "", 4) + separator + padd(irMonth + "", 2) + separator + padd(irDay + "", 2));
     }
 
     public String getIranianDate10Char() {

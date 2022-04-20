@@ -12,11 +12,11 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MagfaMessageDto {
-   private Integer status;
-   private Integer parts;
-   private Float tariff;
-   private String userId;
-   private String recipient;
-   private String alphabet;
-   private Long id;
+    private Integer status;
+    private Integer parts;
+    private Float tariff;
+    private String userId;
+    private String recipient;
+    private String alphabet;
+    private Long id;
 }

@@ -3,6 +3,7 @@ spring:
     name: notification-service
   profiles:
     active: dev
+
 #eureka:
 #  instance:
 #    preferIpAddress: true
@@ -17,16 +18,17 @@ server:
       max: 15
 #debug: true
 
-
 logging:
   level:
     com.netflix: WARN
     org.springframework:
-      web: DEBUG
-      context: DEBUG
-    com.optimagrowth: DEBUG
+      web: debug
+      filter:
+        CommonsRequestLoggingFilter: debug
+      context: INFO
+    com.optimagrowth: INFO
     io.micrometer:
-      elastic: DEBUG
+      elastic: INFO
 
 #management.endpoints.web.base-path=/
 management.endpoints.enabled-by-default: false
@@ -41,39 +43,44 @@ management:
     export:
       prometheus:
         enabled: true
-#      elastic:
-#        enabled: true
-#        host: "http://localhost:9200"
-#        auto-create-index: true
-#        step: 30s
-#    #        userName=***
-#    #        password=***
-#    distribution:
-#      percentiles-histogram:
-#        http:
-#          server:
-#            requests: true
-#      sla:
-#        http:
-#          server:
-#            requests: 100ms, 400ms, 500ms, 2000ms
-#      percentiles:
-#        http:
-#          server:
-#            requests: 0.5, 0.75, 0.95, 0.99
+
+  #      elastic:
+  #        enabled: true
+  #        host: "http://localhost:9200"
+  #        auto-create-index: true
+  #        step: 30s
+  #    #        userName=***
+  #    #        password=***
+  #    distribution:
+  #      percentiles-histogram:
+  #        http:
+  #          server:
+  #            requests: true
+  #      sla:
+  #        http:
+  #          server:
+  #            requests: 100ms, 400ms, 500ms, 2000ms
+  #      percentiles:
+  #        http:
+  #          server:
+  #            requests: 0.5, 0.75, 0.95, 0.99
   health:
     circuitbreakers:
       enabled: true
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus,metrics
+        include: health,info,prometheus,metrics,httptrace
   endpoint:
     prometheus:
       enabled: true
     health:
       enabled: true
       show-details: always
+  trace:
+    http:
+      include: RESPONSE_HEADERS
+
 
 keycloak:
   realm: Otp-realm
@@ -137,7 +144,7 @@ resilience4j:
 #      ringBufferSizeInHalfOpenState: 4
 #      waitDurationInOpenState: 20s
 #      failureRateThreshold: 60
-#
+
 #resilience4j.ratelimiter:
 #  instances:
 #    rateLimitMagfaSendSms:
@@ -158,7 +165,7 @@ resilience4j:
 #      limit-refresh-period: 1
 #      limit-for-period: 1 #The Max number of calls that can be done in the time specified by limit-refresh-period
 #      timeout-duration: 1s # The max amount of time a call can last
-#
+
 #resilience4j.retry:
 #  instances:
 #    retryMagfaSendSms:
@@ -172,8 +179,7 @@ resilience4j:
 #    bulkheadMagfaSendSms:
 #      maxWaitDuration: 2ms
 #      maxConcurrentCalls: 20
-#
-#
+
 #resilience4j.thread-pool-bulkhead:
 #  instances:
 #    bulkheadMagfaSendSms:
@@ -181,17 +187,37 @@ resilience4j:
 #      coreThreadPoolSize: 1
 #      queueCapacity: 1
 
+feign:
+  httpclient:
+    disable-ssl-validation: true
+    enabled: false
+  okhttp:
+    enabled: true
+
 magfa:
   url: https://sms.magfa.com
+  #  url: https://10.42.6.4
   path: /api/http/sms/v2
   number: 9830007682
   test-receiver-list: 989124402951,09133480144
   username: ekeshavarzi/agri-bank
   password: QYZJq83uBiNY2D6V
 
+rahyab:
+  url: http://rahyabbulk.ir
+  path: /url/send.aspx
+  from: 98500019603,9850001813011
+  test-receiver-list: 989124402951,09133480144
+  username: agribank2,agribank
+  password: aGriB@Nk97,AgriB@nk
+
 data.exception:
   message1: BlogAlreadyExists
   message2: BlogNotFound
   message3: DataConnectivityisLost
   notfound: DATA NOT FOUND
-
+springdoc:
+  paths-to-match: /**
+  packages-to-scan: ir.bki
+  api-docs:
+    path: /api-docs

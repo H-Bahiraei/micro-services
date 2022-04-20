@@ -29,21 +29,25 @@ public class DemoController {
     public String circuitBreaker() {
         return demoService.circuitBreaker();
     }
+
     @Timed
     @GetMapping("/bulkhead")
     public String bulkhead() {
         return demoService.bulkHead();
     }
+
     @Timed
     @GetMapping("/tl")
     public CompletableFuture<String> timeLimiter() {
         return demoService.timeLimiter();
     }
+
     @Timed
     @GetMapping("/rl")
     public String rateLimiter() {
         return demoService.rateLimiter();
     }
+
     @Timed
     @GetMapping("/retry")
     public String retry() {

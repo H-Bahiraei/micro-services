@@ -13,9 +13,10 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@AllArgsConstructor @NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class NotificationRequestDto {
-     private String message;
+    private String message;
 //    List<String> messages;
 //    List<String>recipients;
 //    List<String> senders;
