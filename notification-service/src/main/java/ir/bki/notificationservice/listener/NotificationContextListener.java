@@ -14,7 +14,7 @@ public class NotificationContextListener {
     // Test
     @EventListener({ContextRefreshedEvent.class})
     public void handleContextStartEvent(ContextRefreshedEvent refreshedEvent) {
-        LOGGER.info("Service Startup Date.... " + new Date(refreshedEvent.getApplicationContext().getStartupDate()));
+        LOGGER.info("Service Startup Date..... " + new Date(refreshedEvent.getApplicationContext().getStartupDate()));
 
     }
 
