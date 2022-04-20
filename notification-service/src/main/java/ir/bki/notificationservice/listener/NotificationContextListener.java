@@ -11,10 +11,10 @@ import java.util.Date;
 @Component
 public class NotificationContextListener {
     private final Logger LOGGER = LoggerFactory.getLogger(NotificationContextListener.class);
-
+    // Test
     @EventListener({ContextRefreshedEvent.class})
     public void handleContextStartEvent(ContextRefreshedEvent refreshedEvent) {
-        LOGGER.info("Service Startup Date:" + new Date(refreshedEvent.getApplicationContext().getStartupDate()));
+        LOGGER.info("Service Startup Date.... " + new Date(refreshedEvent.getApplicationContext().getStartupDate()));
 
     }
 

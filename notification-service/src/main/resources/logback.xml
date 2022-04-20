@@ -23,7 +23,7 @@
             <!-- each archived file, size max 10MB -->
             <maxFileSize>10MB</maxFileSize>
             <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
-            <totalSizeCap>20GB</totalSizeCap>
+            <totalSizeCap>1GB</totalSizeCap>
             <!-- 60 days to keep -->
             <maxHistory>60</maxHistory>
         </rollingPolicy>
@@ -31,6 +31,7 @@
             <pattern>%d %p %c{1.} [%t] %m%n</pattern>
         </encoder>
     </appender>
+
     <logger name="ROOT" level="INFO" additivity="false">
         <appender-ref ref="ROOT"/>
     </logger>
