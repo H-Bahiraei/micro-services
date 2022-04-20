@@ -23,7 +23,7 @@
         <module>otp-service</module>
         <module>notification-service</module>
         <module>eurekaserver</module>
-        <!--    <module>gatewayserver</module>-->
+        <module>gatewayserver</module>
     </modules>
 
     <build>
