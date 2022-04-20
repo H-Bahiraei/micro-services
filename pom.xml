@@ -19,7 +19,7 @@
     </properties>
 
     <modules>
-        <!--    <module>configserver</module>-->
+        <module>configserver</module>
         <module>otp-service</module>
         <module>notification-service</module>
         <module>eurekaserver</module>
