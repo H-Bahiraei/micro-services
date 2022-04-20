@@ -39,7 +39,7 @@
     <appender name="magfa" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_LOG}/magfa/magfa.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>logs/archived/magfa.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>${HOME_LOG}/archived/magfa.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <!-- each archived file, size max 10MB -->
             <maxFileSize>10MB</maxFileSize>
             <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
@@ -55,11 +55,31 @@
         <appender-ref ref="magfa"/>
     </logger>
 
+    <!--    rahyab logger-->
+    <appender name="rahyab" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG}/rahyab/rahyab.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${HOME_LOG}/archived/rahyab.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="rahyab" level="INFO" additivity="false">
+        <appender-ref ref="rahyab"/>
+    </logger>
+
     <!--    HTTP Request Response logger-->
     <appender name="http" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_LOG}/http/req_res.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>logs/archived/req_res.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>${HOME_LOG}/archived/req_res.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <!-- each archived file, size max 10MB -->
             <maxFileSize>10MB</maxFileSize>
             <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
