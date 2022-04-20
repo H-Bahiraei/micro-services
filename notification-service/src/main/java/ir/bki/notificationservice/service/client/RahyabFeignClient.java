@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "rahyab", url = "${rahyab.url}", path = "${rahyab.path}")
 public interface RahyabFeignClient {
+    //comment
 
     @RequestMapping(
             method = RequestMethod.GET,
