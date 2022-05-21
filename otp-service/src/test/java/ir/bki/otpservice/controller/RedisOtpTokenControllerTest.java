@@ -2,6 +2,7 @@ package ir.bki.otpservice.controller;
 
 import com.google.gson.Gson;
 import ir.bki.otpservice.IntegrationTest;
+import ir.bki.otpservice.model.NotificationRequestDto;
 import ir.bki.otpservice.model.ResponseDto;
 import ir.bki.otpservice.service.RedisHelperImpl;
 import ir.bki.otpservice.service.StrongAuthService;
@@ -14,6 +15,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,6 +29,7 @@ public class RedisOtpTokenControllerTest {
     private static final String PAIR_DATA = "3";
     private static final int OTP_LENGTH = 5;
     private static final String FAKE_HASH_KEY = "AAAAAAAAAA";
+    private static final String MESSAGE_BODY = "همراه بانک \n کد فعالسازی شما: \n ${code}";
     final String SEPARATOR = ":";
     private final String mobileNo = "989216017504";
     @Autowired
@@ -42,22 +45,25 @@ public class RedisOtpTokenControllerTest {
     @Test
     public void sendOTPAndCheckRedisTest() throws Exception {
 
-        strongAuthService.deleteFailedAttemptByMobileNo("09216017504");
+        this.unBlock(mobileNo);
 
 // test 1 : generate otp and check key in redis
-
+        NotificationRequestDto notificationRequestDto = new NotificationRequestDto(MESSAGE_BODY);
         MvcResult result = mockMvc.perform(
                         post(API_URL + "/mobiles/" + mobileNo + "/generation")
+                                .contentType(APPLICATION_JSON_UTF8)
+                                .content(notificationRequestDto.toJSON())
                                 .header("Pair-Data", PAIR_DATA)
                                 .header("Timeout", TIME_OUT)
                                 .header("Otp-Length", OTP_LENGTH)
                                 .header("Authorization", AUTHORIZATION_HEADER))
                 .andExpect(status().isCreated()).andReturn();
 
+
         String contentAsString = result.getResponse().getContentAsString();
         ResponseDto<String> response = new Gson().fromJson(contentAsString, ResponseDto.class);
 
-        String randomStr= response.getPayload().get(0).substring(16, 26);
+        String randomStr = response.getPayload().get(0).substring(16, 26);
         Set<String> redis_N = strongAuthService.getKeyesByPattern("HC" + SEPARATOR + mobileNo + SEPARATOR
                 + randomStr + SEPARATOR + "*****");
         assertThat(redis_N.size()).isEqualTo(1);
@@ -77,8 +83,26 @@ public class RedisOtpTokenControllerTest {
 
         assertThat(strongAuthService.get(latestKey)).isEqualTo(PAIR_DATA);
 
+        this.unBlock(mobileNo);
+    }
 
+
+    @Test
+    public void blockAndsendOTPAndCheckRedisTest() throws Exception {
 // test 3 :  block and call service generation OTP --> assert: BAD_REQ   and check size of redis
+
+        this.unBlock(mobileNo);
+
+        NotificationRequestDto notificationRequestDto = new NotificationRequestDto(MESSAGE_BODY);
+        MvcResult result = mockMvc.perform(
+                        post(API_URL + "/mobiles/" + mobileNo + "/generation")
+                                .contentType(APPLICATION_JSON_UTF8)
+                                .content(notificationRequestDto.toJSON())
+                                .header("Pair-Data", PAIR_DATA)
+                                .header("Timeout", TIME_OUT)
+                                .header("Otp-Length", OTP_LENGTH)
+                                .header("Authorization", AUTHORIZATION_HEADER))
+                .andExpect(status().isCreated()).andReturn();
 
 
         int redis_I3 = getCountOfHCForANumPattern(mobileNo);
@@ -97,31 +121,14 @@ public class RedisOtpTokenControllerTest {
         this.unBlock(mobileNo);
 
 
-// test 4: send invalid mobile num --> assert: Bad_Req  bayad benvisimesh
-
-
-        strongAuthService.deleteFailedAttemptByMobileNo("09216017504");
-
-
     }
 
-    private int getCountOfHCForANumPattern(String mobileNo) {
-        return strongAuthService.getKeyesByPattern("HC" + SEPARATOR + mobileNo + SEPARATOR + "**********" + SEPARATOR + "*****").size();
-    }
 
-    private void unBlock(String mobileNo) {
-        strongAuthService.deleteFailedAttemptByMobileNo(mobileNo);
-    }
-
-    public void blockANum(String mobileNo) {
-        for (int i = 0; i <= limitOfFA; i++) {
-            strongAuthService.createFailedAttempt(mobileNo);
-        }
-    }
+    // test 4: send invalid mobile num --> assert: Bad_Req  bayad benvisimesh
 
 
     @Test
-    public void veriftOTPAndCheckRedisTest() throws Exception {
+    public void verifyOTPWithoutRecordInRedisTest() throws Exception {
 
 // test 1 : call verify while redis does not have its record --> assert : BAD_Req and check size od redis
         this.unBlock(mobileNo);
@@ -138,6 +145,15 @@ public class RedisOtpTokenControllerTest {
         assertThat(redis_I1).isEqualTo(redis_N1);
 
         this.unBlock(mobileNo);
+
+
+    }
+
+    @Test
+    public void verifyOTPWithIncorrectHKeyTest() throws Exception {
+
+        this.unBlock(mobileNo);
+
 // test 2 and 3 : write on valid HC_key and call verify (assert --> BAD_Req and 200) and check redis before and after that ( assert --> 0)
 
         String randomString = strongAuthService.generateStringRandom(10);
@@ -158,6 +174,24 @@ public class RedisOtpTokenControllerTest {
 
         assertThat(strongAuthService.get(cacheKey)).isEqualTo(PAIR_DATA);
 
+        this.unBlock(mobileNo);
+
+    }
+
+
+    @Test
+    public void verifyOTPWithIncorrectPDTest() throws Exception {
+
+        this.unBlock(mobileNo);
+
+// test 2 and 3 : write on valid HC_key and call verify (assert --> BAD_Req ) and check redis before and after that ( assert --> 0)
+
+        String randomString = strongAuthService.generateStringRandom(10);
+        String clientHashKey = "HC" + SEPARATOR + mobileNo + SEPARATOR + randomString;
+        String cacheKey = clientHashKey + SEPARATOR + FAKE_Code;
+        strongAuthService.put(cacheKey, PAIR_DATA);
+
+        assertThat(strongAuthService.get(cacheKey)).isEqualTo(PAIR_DATA);
 
         // BAD_Req : wrong PD
         mockMvc.perform(
@@ -170,8 +204,24 @@ public class RedisOtpTokenControllerTest {
 
         assertThat(strongAuthService.get(cacheKey)).isEqualTo(PAIR_DATA);
 
+        this.unBlock(mobileNo);
+
+    }
+
+    @Test
+    public void verifyOTPWithIncorrectOTPCodeTest() throws Exception {
+
+        this.unBlock(mobileNo);
+        String randomString = strongAuthService.generateStringRandom(10);
+        String clientHashKey = "HC" + SEPARATOR + mobileNo + SEPARATOR + randomString;
+        String cacheKey = clientHashKey + SEPARATOR + FAKE_Code;
+        strongAuthService.put(cacheKey, PAIR_DATA);
+
+        assertThat(strongAuthService.get(cacheKey)).isEqualTo(PAIR_DATA);
 
         // BAD_Req : wrong Code
+
+
         mockMvc.perform(
                         post(API_URL + "/mobiles/" + mobileNo + "/verification")
                                 .header("Hash-Key", clientHashKey)
@@ -182,6 +232,20 @@ public class RedisOtpTokenControllerTest {
 
         assertThat(strongAuthService.get(cacheKey)).isEqualTo(PAIR_DATA);
 
+        this.unBlock(mobileNo);
+
+    }
+
+    @Test
+    public void verifyOTPWithCorrectOTPCodeTest() throws Exception {
+
+        this.unBlock(mobileNo);
+        String randomString = strongAuthService.generateStringRandom(10);
+        String clientHashKey = "HC" + SEPARATOR + mobileNo + SEPARATOR + randomString;
+        String cacheKey = clientHashKey + SEPARATOR + FAKE_Code;
+        strongAuthService.put(cacheKey, PAIR_DATA);
+
+        assertThat(strongAuthService.get(cacheKey)).isEqualTo(PAIR_DATA);
 
         // OK :
         mockMvc.perform(
@@ -194,6 +258,30 @@ public class RedisOtpTokenControllerTest {
 
         assertThat(strongAuthService.get(cacheKey)).isEqualTo(null);
 
+        this.unBlock(mobileNo);
+    }
+
+
+    @Test
+    public void verifyAfterVerifyTest() throws Exception {
+
+        this.unBlock(mobileNo);
+        String randomString = strongAuthService.generateStringRandom(10);
+        String clientHashKey = "HC" + SEPARATOR + mobileNo + SEPARATOR + randomString;
+        String cacheKey = clientHashKey + SEPARATOR + FAKE_Code;
+        strongAuthService.put(cacheKey, PAIR_DATA);
+
+        assertThat(strongAuthService.get(cacheKey)).isEqualTo(PAIR_DATA);
+        // OK :
+        mockMvc.perform(
+                        post(API_URL + "/mobiles/" + mobileNo + "/verification")
+                                .header("Hash-Key", clientHashKey)
+                                .header("Pair-Data", PAIR_DATA)
+                                .header("Code", FAKE_Code)
+                                .header("Authorization", AUTHORIZATION_HEADER))
+                .andExpect(status().isOk());
+
+        assertThat(strongAuthService.get(cacheKey)).isEqualTo(null);
 
 // test 4 : after a success verify --> next verify --> assert : BAD_Req
         mockMvc.perform(
@@ -204,6 +292,21 @@ public class RedisOtpTokenControllerTest {
                                 .header("Authorization", AUTHORIZATION_HEADER))
                 .andExpect(status().isBadRequest());
 
+
+        this.unBlock(mobileNo);
+    }
+
+
+    @Test
+    public void verifyAfterBlockingTest() throws Exception {
+
+        this.unBlock(mobileNo);
+        String randomString = strongAuthService.generateStringRandom(10);
+        String clientHashKey = "HC" + SEPARATOR + mobileNo + SEPARATOR + randomString;
+        String cacheKey = clientHashKey + SEPARATOR + FAKE_Code;
+        strongAuthService.put(cacheKey, PAIR_DATA);
+
+        assertThat(strongAuthService.get(cacheKey)).isEqualTo(PAIR_DATA);
 // test 5 : after block call service verify ( assert --> BAD_Req )
         this.blockANum(mobileNo);
 
@@ -220,6 +323,8 @@ public class RedisOtpTokenControllerTest {
                 .andExpect(status().isBadRequest());
 
         assertThat(strongAuthService.get(cacheKey)).isEqualTo(PAIR_DATA);
+        this.unBlock(mobileNo);
+
 
     }
 
@@ -238,6 +343,21 @@ public class RedisOtpTokenControllerTest {
 
         // isblock? assert : false
 
+    }
+
+
+    private int getCountOfHCForANumPattern(String mobileNo) {
+        return strongAuthService.getKeyesByPattern("HC" + SEPARATOR + mobileNo + SEPARATOR + "**********" + SEPARATOR + "*****").size();
+    }
+
+    private void unBlock(String mobileNo) {
+        strongAuthService.deleteFailedAttemptByMobileNo(mobileNo);
+    }
+
+    public void blockANum(String mobileNo) {
+        for (int i = 0; i <= limitOfFA; i++) {
+            strongAuthService.createFailedAttempt(mobileNo);
+        }
     }
 
 

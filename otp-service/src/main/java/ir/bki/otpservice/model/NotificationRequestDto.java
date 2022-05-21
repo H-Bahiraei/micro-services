@@ -1,6 +1,7 @@
 package ir.bki.otpservice.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import ir.bki.otpservice.util.GsonModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.List;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor @NoArgsConstructor
-public class NotificationRequestDto {
+public class NotificationRequestDto  extends GsonModel {
      private String message;
 //    List<String> messages;
 //    List<String>recipients;

@@ -42,10 +42,12 @@ public class LoggableAspectHandler {
         String methodName = joinPoint.getSignature().getName();
         String classMethodArgs = className + "." + methodName;
 
-        Object[] args= joinPoint.getArgs();
-
-        for(Object arg : args){
-            classMethodArgs =classMethodArgs + " , " + arg.toString();
+        Object[] args = joinPoint.getArgs();
+        if (args != null) {
+            for (Object arg : args) {
+                if (arg != null)
+                    classMethodArgs = classMethodArgs + " , " + arg.toString();
+            }
         }
 
         Map<String, String> mapRequest = HeaderUtil.getHeadersInfo(httpServletRequest);
@@ -60,8 +62,8 @@ public class LoggableAspectHandler {
         // Error for Ex and why debug?
 
         log.info("["
-                +" #time: " + LocalDateTime.now() // get time
-                +" "+ String.format("%-6d", (System.currentTimeMillis() - startTime)) + " ms] "
+                + " #time: " + LocalDateTime.now() // get time
+                + " " + String.format("%-6d", (System.currentTimeMillis() - startTime)) + " ms] "
                 + " ;#IP: " + clientIp
                 + " ;#rest: " + rest
                 + " ;#classMethodArgs: " + String.format("%-50s", classMethodArgs)
