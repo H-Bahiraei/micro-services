@@ -28,5 +28,5 @@ public interface NotificationServiceFeign {
     )
     ResponseDto<String> send(@PathVariable("mobile-no") String mobileNo
                            , @RequestBody NotificationRequestDto notificationRequestDto);
-    //(@PathVariable("mobile-no") String mobileNo,  @QueryParam("provider") String provider)
+//    (@PathVariable("mobile-no") String mobileNo,  @QueryParam("provider") String provider)
 }

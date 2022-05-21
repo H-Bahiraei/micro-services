@@ -1,6 +1,7 @@
 package ir.bki.otpservice.config;
 
 import ir.bki.otpservice.listener.MessagePublisher;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.data.redis.serializer.GenericToStringSerializer;
  * @since 4/5/2022
  */
 @Configuration
+@Slf4j
 public class JedisConfig {
 
     @Value("${spring.redis.host}")
@@ -39,12 +41,11 @@ public class JedisConfig {
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
-        System.out.println("#hostname: "+redisServer+" ;"+redisPort);
+        log.debug("#hostname: "+redisServer+" ;"+redisPort);
         String hostname = redisServer;
         int port = Integer.parseInt(redisPort);
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(hostname, port);
         redisStandaloneConfiguration.setPassword(RedisPassword.of("Mani3280@"));
-
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 

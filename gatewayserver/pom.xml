@@ -15,6 +15,7 @@
     <description>API Gateway server</description>
 
     <properties>
+        <docker.image.prefix>9124402951</docker.image.prefix>
         <java.version>11</java.version>
         <spring-cloud.version>2021.0.1</spring-cloud.version>
     </properties>
@@ -59,6 +60,12 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>3.21.4</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

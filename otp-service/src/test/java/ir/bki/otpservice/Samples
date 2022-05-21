@@ -1,0 +1,25 @@
+ .perform().
+.andExpect(status().isCreated())
+.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+
+response code 200:
+.andExpect(jsonPath("$.[*].id").value(hasItem(customer.getId().intValue())))
+.andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(count + 1)));
+
+response code 400:
+.andExpect(result -> assertEquals("xxx", result.getResolvedException().getMessage()))
+.andExpect(result -> assertTrue(result.getResolvedException() instanceof BadRequestAlertException));
+
+
+
+assertEquals("xxx", "yyy")
+assertTrue( OBJ.f1)
+
+assertThat(List).hasSize()
+assertThat(OBJ.f1).isEqualTo("X");
+assertThat(Arrays.asList("foo", "bar"), hasItem("bar"))
+
+
+
+
+

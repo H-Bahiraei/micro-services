@@ -12,21 +12,26 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 //https://programmer.group/example-of-using-redis-in-spring-boot.html
 @Service("RedisHelper")
 public class RedisHelperImpl implements RedisHelper {
+
+
     // Get redisTemplate instance in constructor, key(not hashKey) uses String type by default
     private final RedisTemplate redisTemplate;
     // Instantiate the operation object in the constructor through the redisTemplate factory method
     private final HashOperations<String, String, String> hashOperations;
     private final ListOperations<String, String> listOperations;
     private final ValueOperations<String, String> valueOperations;
+
+//    private final ObjectFactory<String> keyFactory;
 
 
     // IDEA can be injected successfully even though it has errors. After instantiating the operation object, the method can be called directly to operate the Redis database
@@ -38,6 +43,9 @@ public class RedisHelperImpl implements RedisHelper {
 //        this.zSetOperations = redisTemplate.opsForZSet();
 //        this.setOperations = redisTemplate.opsForSet();
         this.valueOperations = redisTemplate.opsForValue();
+
+
+
     }
 
     @Override
@@ -55,8 +63,10 @@ public class RedisHelperImpl implements RedisHelper {
 
     @Override
     public Map<String, String> getAllh(String key) {
+
         return hashOperations.entries(key);
     }
+
 
     @Override
     public String get(String key, String field) {

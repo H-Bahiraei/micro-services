@@ -36,6 +36,8 @@ public class ResponseDto<T>  {
     @JsonProperty("pages_count")
     private Long pagesCount;// use when we need paging
 
+    private Long errorCode;
+
     private List<T> payload=new ArrayList<>();
 
 //      "links": [
@@ -55,7 +57,7 @@ public class ResponseDto<T>  {
 
     @JsonIgnore
     public int getHttpStatus() {
-        if (status ==0) return 200;
+//        if (status ==0) return 200;
         return httpStatus;
     }
 
@@ -89,10 +91,13 @@ public class ResponseDto<T>  {
         sb.append("statusCode=").append(status);
         sb.append(", message='").append(message).append('\'');
         sb.append(", httpStatus=").append(httpStatus);
+        sb.append(", errorCode=").append(errorCode);
         sb.append(", count=").append(count);
         sb.append(", elapsedTime=").append(elapsedTime);
-        if(payload!=null)
+        if(payload!=null) {
             sb.append(", payload.size=").append(payload.size());
+//            sb.append(", payload.HK=").append(payload.get(0));
+        }
         sb.append('}');
         return sb.toString();
     }
