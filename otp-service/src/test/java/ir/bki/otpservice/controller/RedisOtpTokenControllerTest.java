@@ -30,6 +30,7 @@ public class RedisOtpTokenControllerTest {
     private static final int OTP_LENGTH = 5;
     private static final String FAKE_HASH_KEY = "AAAAAAAAAA";
     private static final String MESSAGE_BODY = "همراه بانک \n کد فعالسازی شما: \n ${code}";
+    private static final String WRONG_MOBILE_NUM = "9216017504";
     final String SEPARATOR = ":";
     private final String mobileNo = "989216017504";
     @Autowired
@@ -125,7 +126,26 @@ public class RedisOtpTokenControllerTest {
 
 
     // test 4: send invalid mobile num --> assert: Bad_Req  bayad benvisimesh
+    @Test
+    public void sendOTPByIncorrectPhoneNum() throws  Exception{
 
+
+        NotificationRequestDto notificationRequestDto = new NotificationRequestDto(MESSAGE_BODY);
+        mockMvc.perform(
+                        post(API_URL + "/mobiles/" + WRONG_MOBILE_NUM + "/generation")
+                                .contentType(APPLICATION_JSON_UTF8)
+                                .content(notificationRequestDto.toJSON())
+                                .header("Pair-Data", PAIR_DATA)
+                                .header("Timeout", TIME_OUT)
+                                .header("Otp-Length", OTP_LENGTH)
+                                .header("Authorization", AUTHORIZATION_HEADER))
+                .andExpect(status().isBadRequest());
+
+
+        int redis_I3 = getCountOfHCForANumPattern(WRONG_MOBILE_NUM);
+        assertThat(redis_I3).isEqualTo(0);
+
+    }
 
     @Test
     public void verifyOTPWithoutRecordInRedisTest() throws Exception {

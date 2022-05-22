@@ -147,6 +147,7 @@ public class StrongAuthService implements StrongAuth {
     }
 
 
+    @Loggable
     public void createFailedAttempt(String mobileNo) {
         Date now = new Date();
         FailedAttempt failedAttempt = new FailedAttempt();
@@ -204,6 +205,7 @@ public class StrongAuthService implements StrongAuth {
         return 0;
     }
 
+    @Loggable
     @Override
     public int deleteFailedAttemptByMobileNo(String mobileNo) {
         if (redisHelper.exists(mobileNo)) {

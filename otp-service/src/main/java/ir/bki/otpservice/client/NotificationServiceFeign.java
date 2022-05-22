@@ -1,5 +1,6 @@
 package ir.bki.otpservice.client;
 
+import ir.bki.otpservice.apects.Loggable;
 import ir.bki.otpservice.model.NotificationRequestDto;
 import ir.bki.otpservice.model.ResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,9 +18,11 @@ import javax.ws.rs.QueryParam;
  * @since 4/9/2022
  */
 //https://docs.spring.io/spring-cloud-openfeign/docs/current/reference/html/
+
 @FeignClient(name = "notofication-service", url = "${notification-service.url}", path = "${notification-service.path}")
 public interface NotificationServiceFeign {
 
+    @Loggable
     @RequestMapping(
             method = RequestMethod.POST,
             value = "/mobiles/{mobile-no}"

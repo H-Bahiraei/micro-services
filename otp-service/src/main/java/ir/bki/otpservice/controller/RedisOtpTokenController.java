@@ -51,6 +51,8 @@ public class RedisOtpTokenController {
             , @RequestBody(required = false) NotificationRequestDto messageBodyRequest
             , HttpServletRequest request) throws BadRequestAlertException {
 
+        //            System.out.println("mobileNo = " + mobileNo + ", pairData = " + pairData + ", timeout = " + timeout + ", otpLength = " + otpLength + ", authorization = " + authorization + ", messageBodyRequest = " + messageBodyRequest + ", request = " + request);
+
         List<String> payload = new ArrayList<>();
         long start = System.currentTimeMillis();
 
@@ -76,14 +78,11 @@ public class RedisOtpTokenController {
             String clientHashKey = "HC" + SEPARATOR + mobileNo + SEPARATOR + randomString; // This will send to client
             String cacheKey = clientHashKey + SEPARATOR + code;
             strongAuthService.put(cacheKey, pairData); // cache key: HC:09216017504:TylIvJcoQa:66688 pairData: 20000;transfer;application;ib;tr12345
-//            System.out.println("mobileNo = " + mobileNo + ", pairData = " + pairData + ", timeout = " + timeout + ", otpLength = " + otpLength + ", authorization = " + authorization + ", messageBodyRequest = " + messageBodyRequest + ", request = " + request);
-//            System.out.println("****cacheKey" + cacheKey);
             strongAuthService.expire(cacheKey, Duration.ofSeconds(timeout));
-            payload.add(clientHashKey);//Will return to client: HC:989176323629:XtLOANJCKa ; Client must send it in next request
+            payload.add(clientHashKey);//Will return to client: HC:989176323629:XtLOANJCKa ; Client must send it in verify request
             NotificationRequestDto notificationRequestDto = new NotificationRequestDto(messageForSend);
-//        System.out.println("#notificationRequestDto: " + notificationRequestDto);
             ResponseDto<String> responseDtoSms = notificationServiceFeign.send(mobileNo, notificationRequestDto);// ???
-//            log.info("PUT->cacheKey:" + cacheKey + " ;value: " + pairData);
+//            log.info("PUT->cacheKey:" + cacheKey + " ;  value: " + pairData);
 //            log.info("#responseDtoSms = " + responseDtoSms);
             if (responseDtoSms != null && responseDtoSms.getStatus() == 0)
                 payload.add(responseDtoSms.getPayload().get(0));
@@ -91,7 +90,7 @@ public class RedisOtpTokenController {
             responseDto.setMessage("code is sended");
             return ResponseEntity
                     .status(responseDto.getHttpStatus()).
-                    body(responseDto);//HC:989176323629:XtLOANJCKa
+                    body(responseDto);
         } else {
             throw new BadRequestAlertException(request.getMethod() + "-->" + request.getRequestURI(),
                     USER_IS_Blocked, "user is blocked", start);
