@@ -36,33 +36,33 @@ services:
       backend:
         aliases:
           - "redisserver"
-#  elasticsearch:
-#    container_name: es-container
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.2
-#    environment:
-#      - xpack.security.enabled=false
-#      - "discovery.type=single-node"
-#    volumes:
-#      - elasticsearch-data:/usr/share/elasticsearch/data
-#    networks:
-#      backend:
-#        aliases:
-#           - es-net
-#    ports:
-#      - 9200:9200
-#  kibana:
-#    container_name: kb-container
-#    image: docker.elastic.co/kibana/kibana:7.17.2
-#    environment:
-#      - ELASTICSEARCH_HOSTS=http://es-container:9200
-#    networks:
-#      backend:
-#        aliases:
-#           - es-net-kibana
-#    depends_on:
-#      - elasticsearch
-#    ports:
-#      - 5601:5601
+  elasticsearch:
+    container_name: es-container
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.2
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      backend:
+        aliases:
+           - es-net
+    ports:
+      - 9200:9200
+  kibana:
+    container_name: kb-container
+    image: docker.elastic.co/kibana/kibana:7.17.2
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es-container:9200
+    networks:
+      backend:
+        aliases:
+           - es-net-kibana
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
   keycloak:
     image: jboss/keycloak
     container_name: keycloak

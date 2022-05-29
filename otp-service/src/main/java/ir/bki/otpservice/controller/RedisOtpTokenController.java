@@ -5,8 +5,11 @@ import ir.bki.otpservice.client.NotificationServiceFeign;
 import ir.bki.otpservice.exception.BadRequestAlertException;
 import ir.bki.otpservice.model.NotificationRequestDto;
 import ir.bki.otpservice.model.ResponseDto;
+import ir.bki.otpservice.service.ResponseDtoServiceImpl;
 import ir.bki.otpservice.service.StrongAuthService;
+import ir.bki.otpservice.service.impl.ResponseDtoService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +35,11 @@ import static ir.bki.otpservice.exception.ErrorCodeConstants.*;
 public class RedisOtpTokenController {
 
     private static final String SEPARATOR = ":";
-    private final StrongAuthService strongAuthService;
+    private final StrongAuthService strongAuthService;  // ??? final
     private final NotificationServiceFeign notificationServiceFeign;
+
+    @Autowired
+    private  ResponseDtoService responseDtoService ;
 
     public RedisOtpTokenController(StrongAuthService strongAuthService, NotificationServiceFeign notificationServiceFeign) {
         this.strongAuthService = strongAuthService;
@@ -63,9 +69,14 @@ public class RedisOtpTokenController {
 
 
         ResponseDto<String> responseDto = new ResponseDto<>(payload);
-        responseDto.setPath(request.getMethod() + " " + request.getRequestURI());
-        responseDto.setElapsedTime(System.currentTimeMillis() - start);
-
+//        responseDto.setPath(request.getMethod() + " " + request.getRequestURI());
+        responseDto.setPath(request.getMethod() + " "
+                + request.getServletPath()  + " "
+                + "Pair-Data:" +request.getHeader("Pair-Data") + " "
+                + "Authorization:" + request.getHeader("Authorization") + " "
+                + "Otp-Length"+ request.getHeader("Otp-Length") + " "
+                + "Timeout:" + request.getHeader("Timeout") + " "
+        );
 
         boolean isMobileBlocked = strongAuthService.isMobileBlock(mobileNo);
 //        strongAuthService.deleteFailedAttemptByMobileNo(mobile No)
@@ -84,10 +95,12 @@ public class RedisOtpTokenController {
             ResponseDto<String> responseDtoSms = notificationServiceFeign.send(mobileNo, notificationRequestDto);// ???
 //            log.info("PUT->cacheKey:" + cacheKey + " ;  value: " + pairData);
 //            log.info("#responseDtoSms = " + responseDtoSms);
-            if (responseDtoSms != null && responseDtoSms.getStatus() == 0)
+            if (responseDtoSms != null )
                 payload.add(responseDtoSms.getPayload().get(0));
             responseDto.setHttpStatus(HttpStatus.CREATED.value());
             responseDto.setMessage("code is sended");
+            responseDto.setElapsedTime(System.currentTimeMillis() - start);
+            responseDtoService.createRdtoIndex(responseDto);
             return ResponseEntity
                     .status(responseDto.getHttpStatus()).
                     body(responseDto);
@@ -111,6 +124,13 @@ public class RedisOtpTokenController {
         long start = System.currentTimeMillis();
         ResponseDto<String> responseDto = new ResponseDto<>(payload);
 
+        responseDto.setPath(request.getMethod() + " "
+                + request.getServletPath()  + " "
+                + request.getHeader("Hash-Key")  + " "
+                + request.getHeader("Code") + " "
+                + request.getHeader("Authorization")  + " "
+                + request.getHeader("Pair-Data")  + " "
+        );
         mobileNo= strongAuthService.correctMobileNo(mobileNo);
         if (!mobileNo.substring(0,2).equals("98"))
             throw new BadRequestAlertException(request.getMethod() + "-->" + request.getRequestURI(),
@@ -148,6 +168,7 @@ public class RedisOtpTokenController {
 
 
         responseDto.setElapsedTime(System.currentTimeMillis() - start);
+        responseDtoService.createRdtoIndex(responseDto);
         return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
 
     }
@@ -183,29 +204,30 @@ public class RedisOtpTokenController {
 
         }
         responseDto.setElapsedTime(System.currentTimeMillis() - start);
+        responseDtoService.createRdtoIndex(responseDto);
         return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
     }
 
 
-    @GetMapping("{key}") // TODO Remove on Pro
-    public ResponseEntity<ResponseDto<String>> get(@PathVariable("key") String key, HttpServletRequest request) {
-        List<String> payload = new ArrayList<>();
-        ResponseDto<String> responseDto = new ResponseDto<>(payload);
-        responseDto.setPath(request.getMethod() + " " + request.getRequestURI());
-        payload.add(strongAuthService.get(key));
-        return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
-    }
+//    @GetMapping("{key}") // TODO Remove on Pro
+//    public ResponseEntity<ResponseDto<String>> get(@PathVariable("key") String key, HttpServletRequest request) {
+//        List<String> payload = new ArrayList<>();
+//        ResponseDto<String> responseDto = new ResponseDto<>(payload);
+//        responseDto.setPath(request.getMethod() + " " + request.getRequestURI());
+//        payload.add(strongAuthService.get(key));
+//        return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
+//    }
 
-    @GetMapping("s/{id}")
-    public ResponseEntity<String> sget(@PathVariable("id") String id) {
-        return ResponseEntity.ok(strongAuthService.get("2", id));
-    }
+//    @GetMapping("s/{id}")
+//    public ResponseEntity<String> sget(@PathVariable("id") String id) {
+//        return ResponseEntity.ok(strongAuthService.get("2", id));
+//    }
 
-    @GetMapping("s/put/h")
-    public ResponseEntity<String> sputh() {
-        System.out.println("####PUT");
-        strongAuthService.put("2", "f", "v");
-        return ResponseEntity.ok("ADDED");
-    }
+//    @GetMapping("s/put/h")
+//    public ResponseEntity<String> sputh() {
+//        System.out.println("####PUT");
+//        strongAuthService.put("2", "f", "v");
+//        return ResponseEntity.ok("ADDED");
+//    }
 
 }
