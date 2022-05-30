@@ -18,7 +18,7 @@ public class BadRequestAlertException extends RuntimeException {
 
     private String thrower;
     private String message;
-    private final Long errorCode;
+    private final Long statusCode;
     private Long start;
 
 
@@ -26,7 +26,7 @@ public class BadRequestAlertException extends RuntimeException {
         super("BadRequestAlertException");
         this.thrower = thrower;
         this.message = message;
-        this.errorCode = errorKey;
+        this.statusCode = errorKey;
         this.start = start;
     }
 

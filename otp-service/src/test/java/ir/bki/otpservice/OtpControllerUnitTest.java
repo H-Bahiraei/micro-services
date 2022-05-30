@@ -29,7 +29,7 @@ public class OtpControllerUnitTest {
 
     @BeforeAll
     public static void setup(){
-        System.out.println("setup");
+//        System.out.println("setup");
         List<OtpEntity> list=new ArrayList<>();
         OtpEntity otpEntity1=new OtpEntity();
         otpEntity1.setId(1L); otpEntity1.setMobileNo(9133480144L);
@@ -41,7 +41,7 @@ public class OtpControllerUnitTest {
         Mockito.when(otpService.findAll()).thenReturn(list);
 
         OtpController otpController=new OtpController(otpService);
-        System.out.println(otpController.findAll());
+//        System.out.println(otpController.findAll());
     }
 
     @Test

@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName;
 import ir.bki.otpservice.util.JSONFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -18,6 +17,7 @@ import javax.persistence.GenerationType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mahdi Sharifi
@@ -29,17 +29,24 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Document(indexName = "responsedtoindex")
-public class ResponseDto<T>  {
+public class ResponseDto<T> {
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
+    @JsonProperty("message")
     @Field(type = FieldType.Text, name = "message")
     private String message;
 
+    @JsonProperty("httpStatus")
+    @Field(type = FieldType.Integer, name = "httpStatus")
+    private int httpStatus;
+
+    @JsonProperty("path")
     @Field(type = FieldType.Text, name = "path")
-    private  String path;//transient
+    private String path;//transient
 
     @JsonProperty("information_link")
     @Field(type = FieldType.Text, name = "informationLink")
@@ -48,17 +55,16 @@ public class ResponseDto<T>  {
     @Field(type = FieldType.Text, name = "parameters")
     private String parameters;
 
-    @JsonIgnore
-    @Field(type = FieldType.Integer, name = "httpStatus")
-    private transient int httpStatus;
+    @JsonIgnore // dont go in json Response
+    private Map<String,String> reqParams;
 
     @JsonProperty("elapsed_time")
     @Field(type = FieldType.Long, name = "elapsedTime")
     private Long elapsedTime;
 
-    @JsonProperty("time")
+    @JsonProperty("time") // go to Json Response
     @Field(type = FieldType.Text, name = "time")
-    private String time= LocalDateTime.now()+"";
+    private String time ;
 
     @Field(type = FieldType.Long, name = "count")
     @SerializedName("count")
@@ -69,10 +75,12 @@ public class ResponseDto<T>  {
     @Field(type = FieldType.Long, name = "pagesCount")
     private Long pagesCount;// use when we need paging
 
-    @Field(type = FieldType.Long, name = "errorCode")
-    private Long errorCode;
+    @JsonProperty("status")
+    @Field(type = FieldType.Long, name = "status")
+    private Long status;
 
-    private List<T> payload=new ArrayList<>();
+
+    private List<T> payload = new ArrayList<>();
 
 //      "links": [
 //    {
@@ -89,56 +97,61 @@ public class ResponseDto<T>  {
 //    }
 //    ]
 
-    @JsonIgnore
-    public int getHttpStatus() {
-//        if (status ==0) return 200;
-        return httpStatus;
-    }
-
     public ResponseDto() {
-        elapsedTime=System.currentTimeMillis();
+        elapsedTime = System.currentTimeMillis();
     }
 
     public ResponseDto(List<T> payload) {
         this.payload = payload;
-        elapsedTime=System.currentTimeMillis();
-        httpStatus=200;
+        elapsedTime = System.currentTimeMillis();
+//        httpStatus = 200;
+    }
+
+    public static void main(String[] args) {
+        ResponseDto responseDto = new ResponseDto();
+        System.out.println(JSONFormatter.fromJSON("", ResponseDto.class));
     }
 
 //    public ResponseDto(int status) {
 //        this.status = status;
 //        elapsedTime=System.currentTimeMillis();
 //    }
-//
+
 //    public boolean isSuccess(){
 //        return (status ==0 || (httpStatus>=200 && httpStatus<=299) );
 //    }
 
-    public static void main(String[] args) {
-        ResponseDto responseDto=new ResponseDto();
-        System.out.println(JSONFormatter.fromJSON("",ResponseDto.class));
+
+    public void setReqParams(Map<String, String> reqParams) {  // go to ELK
+        this.reqParams = reqParams;
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ResponseDto{");
-//        sb.append("statusCode=").append(status);
-        sb.append("time: ").append(time);
-        sb.append(", elapsedTime=").append(elapsedTime);
-        sb.append(", path: ").append(path);
-        sb.append(", message='").append(message).append('\'');
-        sb.append(", httpStatus=").append(httpStatus);
-        sb.append(", errorCode=").append(errorCode);
-        sb.append(", count=").append(count);
-        for ( Object p : payload ){
-            sb.append(", payload=").append(p);
-        }
 
-        if(payload!=null) {
-            sb.append(", payload.size=").append(payload.size());
-//            sb.append(", payload.HK=").append(payload.get(0));
-        }
-        sb.append('}');
-        return sb.toString();
+    @JsonIgnore
+    public int getHttpStatus() {
+//        if (status ==0) return 200;
+        return httpStatus;
     }
+
+//    @Override
+//    public String toString() {
+//        final StringBuilder sb = new StringBuilder("ResponseDto {");
+////        sb.append("statusCode=").append(status);
+//        sb.append(" time: ").append(time);
+//        sb.append(", elapsedTime=").append(elapsedTime);
+//        sb.append(", path: ").append(path);
+//        sb.append(", message='").append(message).append('\'');
+//        sb.append(", httpStatus=").append(httpStatus);
+//        sb.append(", errorCode=").append(errorCode);
+//        sb.append(", count=").append(count);
+//        for (Object p : payload) {
+//            sb.append(", payload=").append(p);
+//        }
+//        if (payload != null) {
+//            sb.append(", payload.size=").append(payload.size());
+////            sb.append(", payload.HK=").append(payload.get(0));
+//        }
+//        sb.append(" }");
+//        return sb.toString();
+//    }
 }

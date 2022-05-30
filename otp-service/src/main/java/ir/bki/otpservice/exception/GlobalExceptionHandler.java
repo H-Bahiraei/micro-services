@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Mahdi Sharifi
@@ -51,20 +54,46 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseDto> handleBadRequestAlertException(BadRequestAlertException ex) {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setHttpStatus(HttpStatus.BAD_REQUEST.value());
-//
+        responseDto.setTime(LocalDateTime.now()+"");
         if (ex.getMessage() == null || ex.getMessage() == "")
             responseDto.setMessage("Bad request! Something wrong in client request.");
         else
             responseDto.setMessage(ex.getMessage());
-        responseDto.setErrorCode(ex.getErrorCode());
+
+        responseDto.setStatus(ex.getStatusCode());
         String path = httpServletRequest.getMethod() + " "
-                + httpServletRequest.getServletPath() + " ";
-        path = (httpServletRequest.getHeader("Authorization") != null) ? path + " Authorization:" + (httpServletRequest.getHeader("Authorization")) + " " : path;
-        path = (httpServletRequest.getHeader("Pair-Data") != null) ? path + " Pair-Data:" + (httpServletRequest.getHeader("Pair-Data")) + " " : path;
-        path = (httpServletRequest.getHeader("Otp-Length") != null) ? path + " Otp-Length:" + (httpServletRequest.getHeader("Otp-Length")) + " " : path;
-        path = (httpServletRequest.getHeader("Timeout") != null) ? path + " Timeout:" + (httpServletRequest.getHeader("Timeout")) + " " : path;
-        path = (httpServletRequest.getHeader("Hash-Key") != null) ? path + " Hash-Key:" + httpServletRequest.getHeader("Hash-Key") + " " : path;
-        path = (httpServletRequest.getHeader("Code") != null) ? path + " Code:" + (httpServletRequest.getHeader("Code")) + " " : path;
+                + httpServletRequest.getServletPath();
+
+        Map reqParams = new HashMap<String, String>();
+
+        if (httpServletRequest.getHeader("Authorization") != null)
+            reqParams.put("Authorization", httpServletRequest.getHeader("Authorization"));
+
+        if (httpServletRequest.getHeader("Pair-Data") != null)
+            reqParams.put("Pair-Data", httpServletRequest.getHeader("Pair-Data"));
+
+        if (httpServletRequest.getHeader("Otp-Length") != null)
+            reqParams.put("Otp-Length", httpServletRequest.getHeader("Otp-Length"));
+
+        if (httpServletRequest.getHeader("Timeout") != null)
+            reqParams.put("Timeout", httpServletRequest.getHeader("Timeout"));
+
+        if (httpServletRequest.getHeader("Hash-Key") != null)
+            reqParams.put("Hash-Key", httpServletRequest.getHeader("Hash-Key"));
+
+        if (httpServletRequest.getHeader("Code") != null)
+            reqParams.put("Code", httpServletRequest.getHeader("Code"));
+
+        responseDto.setReqParams(reqParams);
+
+//        path =  ?path + " Authorization:" + (httpServletRequest.getHeader("Authorization")) + " " :path;
+//        path =  ?path + " Pair-Data:" + (httpServletRequest.getHeader("Pair-Data")) + " " :path;
+//        path =  ?path + " Otp-Length:" + (httpServletRequest.getHeader("Otp-Length")) + " " :path;
+//        path =  ?path + " Timeout:" + (httpServletRequest.getHeader("Timeout")) + " " :path;
+//        path = ?path + " Hash-Key:" + httpServletRequest.getHeader("Hash-Key") + " " :path;
+//        path = ?path + " Code:" + (httpServletRequest.getHeader("Code")) + " " :path;
+
+
         responseDto.setPath(path);
         responseDto.setElapsedTime(System.currentTimeMillis() - ex.getStart());
         responseDtoService.createRdtoIndex(responseDto);

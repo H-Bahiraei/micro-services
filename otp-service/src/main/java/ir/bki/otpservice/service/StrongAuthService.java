@@ -179,7 +179,7 @@ public class StrongAuthService implements StrongAuth {
                 }
             }
         }
-        System.out.println("****count:" + count);
+//        System.out.println("****count:" + count);
         return count;
     }
 
@@ -211,7 +211,7 @@ public class StrongAuthService implements StrongAuth {
         if (redisHelper.exists(mobileNo)) {
             redisHelper.remove(mobileNo);
         }
-        System.out.println("****** Delete All FA");
+//        System.out.println("****** Delete All FA");
         return 0;
     }
 

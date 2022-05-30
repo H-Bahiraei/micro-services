@@ -5,7 +5,6 @@ import ir.bki.otpservice.client.NotificationServiceFeign;
 import ir.bki.otpservice.exception.BadRequestAlertException;
 import ir.bki.otpservice.model.NotificationRequestDto;
 import ir.bki.otpservice.model.ResponseDto;
-import ir.bki.otpservice.service.ResponseDtoServiceImpl;
 import ir.bki.otpservice.service.StrongAuthService;
 import ir.bki.otpservice.service.impl.ResponseDtoService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DefaultValue;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static ir.bki.otpservice.exception.ErrorCodeConstants.*;
 
@@ -39,7 +41,7 @@ public class RedisOtpTokenController {
     private final NotificationServiceFeign notificationServiceFeign;
 
     @Autowired
-    private  ResponseDtoService responseDtoService ;
+    private ResponseDtoService responseDtoService;
 
     public RedisOtpTokenController(StrongAuthService strongAuthService, NotificationServiceFeign notificationServiceFeign) {
         this.strongAuthService = strongAuthService;
@@ -60,23 +62,16 @@ public class RedisOtpTokenController {
         //            System.out.println("mobileNo = " + mobileNo + ", pairData = " + pairData + ", timeout = " + timeout + ", otpLength = " + otpLength + ", authorization = " + authorization + ", messageBodyRequest = " + messageBodyRequest + ", request = " + request);
 
         List<String> payload = new ArrayList<>();
+        ResponseDto<String> responseDto = new ResponseDto<>(payload);
+        responseDto.setTime(LocalDateTime.now() + "");
+
         long start = System.currentTimeMillis();
 
-        mobileNo= strongAuthService.correctMobileNo(mobileNo);
-        if (!mobileNo.substring(0,2).equals("98"))
+        mobileNo = strongAuthService.correctMobileNo(mobileNo);
+        if (!mobileNo.substring(0, 2).equals("98"))
             throw new BadRequestAlertException(request.getMethod() + "-->" + request.getRequestURI(),
                     INVALID_MOBILE_NO, mobileNo, start);
 
-
-        ResponseDto<String> responseDto = new ResponseDto<>(payload);
-//        responseDto.setPath(request.getMethod() + " " + request.getRequestURI());
-        responseDto.setPath(request.getMethod() + " "
-                + request.getServletPath()  + " "
-                + "Pair-Data:" +request.getHeader("Pair-Data") + " "
-                + "Authorization:" + request.getHeader("Authorization") + " "
-                + "Otp-Length"+ request.getHeader("Otp-Length") + " "
-                + "Timeout:" + request.getHeader("Timeout") + " "
-        );
 
         boolean isMobileBlocked = strongAuthService.isMobileBlock(mobileNo);
 //        strongAuthService.deleteFailedAttemptByMobileNo(mobile No)
@@ -95,12 +90,24 @@ public class RedisOtpTokenController {
             ResponseDto<String> responseDtoSms = notificationServiceFeign.send(mobileNo, notificationRequestDto);// ???
 //            log.info("PUT->cacheKey:" + cacheKey + " ;  value: " + pairData);
 //            log.info("#responseDtoSms = " + responseDtoSms);
-            if (responseDtoSms != null )
+            if (responseDtoSms != null)
                 payload.add(responseDtoSms.getPayload().get(0));
+
+            responseDto.setPath(request.getMethod() + " "
+                    + request.getServletPath());
+
+            Map reqParams = new HashMap<String, String>();
+            reqParams.put("Pair-Data", request.getHeader("Pair-Data"));
+            reqParams.put("Authorization", request.getHeader("Authorization"));
+            reqParams.put("Otp-Length", request.getHeader("Otp-Length"));
+            reqParams.put("Timeout", request.getHeader("Timeout"));
+
+            responseDto.setReqParams(reqParams);
             responseDto.setHttpStatus(HttpStatus.CREATED.value());
             responseDto.setMessage("code is sended");
-            responseDto.setElapsedTime(System.currentTimeMillis() - start);
+            responseDto.setStatus(0L);
             responseDtoService.createRdtoIndex(responseDto);
+            responseDto.setElapsedTime(System.currentTimeMillis() - start);
             return ResponseEntity
                     .status(responseDto.getHttpStatus()).
                     body(responseDto);
@@ -123,16 +130,13 @@ public class RedisOtpTokenController {
         List<String> payload = new ArrayList<>();
         long start = System.currentTimeMillis();
         ResponseDto<String> responseDto = new ResponseDto<>(payload);
+        responseDto.setTime(LocalDateTime.now() + "");
 
         responseDto.setPath(request.getMethod() + " "
-                + request.getServletPath()  + " "
-                + request.getHeader("Hash-Key")  + " "
-                + request.getHeader("Code") + " "
-                + request.getHeader("Authorization")  + " "
-                + request.getHeader("Pair-Data")  + " "
-        );
-        mobileNo= strongAuthService.correctMobileNo(mobileNo);
-        if (!mobileNo.substring(0,2).equals("98"))
+                + request.getServletPath());
+
+        mobileNo = strongAuthService.correctMobileNo(mobileNo);
+        if (!mobileNo.substring(0, 2).equals("98"))
             throw new BadRequestAlertException(request.getMethod() + "-->" + request.getRequestURI(),
                     INVALID_MOBILE_NO, mobileNo, start);
 
@@ -149,8 +153,11 @@ public class RedisOtpTokenController {
                 // pairData found in cache
                 if (pairDataRequest != null && !"".equals(pairDataRequest)
                         && cacheValue.equals(pairDataRequest)) {
+
+
                     responseDto.setHttpStatus(HttpStatus.OK.value());
-                    responseDto.setMessage("ok");
+                    responseDto.setMessage("code is verified");
+                    responseDto.setStatus(0L);
                     strongAuthService.del(cacheKey);
                     strongAuthService.deleteFailedAttemptByMobileNo(mobileNo);
                 } else {
@@ -158,17 +165,22 @@ public class RedisOtpTokenController {
                     throw new BadRequestAlertException(request.getMethod() + "-->" + request.getRequestURI(),
                             Value_mismatch_with_Key, "Value mismatch with Key", start);
                 }
-            }
-            else {
+            } else {
                 strongAuthService.createFailedAttempt(mobileNo);
                 throw new BadRequestAlertException(request.getMethod() + "-->" + request.getRequestURI(),
                         KEY_IS_NOT_VALUABLE, "KEY IS NOT VALUABLE", start);
             }
         }
 
+        Map reqParams = new HashMap<String, String>();
+        reqParams.put("Hash-Key", request.getHeader("Hash-Key"));
+        reqParams.put("Code", request.getHeader("Code"));
+        reqParams.put("Authorization", request.getHeader("Authorization"));
+        reqParams.put("Pair-Data", request.getHeader("Pair-Data"));
 
-        responseDto.setElapsedTime(System.currentTimeMillis() - start);
+        responseDto.setReqParams(reqParams);
         responseDtoService.createRdtoIndex(responseDto);
+        responseDto.setElapsedTime(System.currentTimeMillis() - start);
         return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
 
     }
@@ -184,8 +196,8 @@ public class RedisOtpTokenController {
         List<String> payload = new ArrayList<>();
         long start = System.currentTimeMillis();
 
-        mobileNo= strongAuthService.correctMobileNo(mobileNo);
-        if (!mobileNo.substring(0,2).equals("98"))
+        mobileNo = strongAuthService.correctMobileNo(mobileNo);
+        if (!mobileNo.substring(0, 2).equals("98"))
             throw new BadRequestAlertException(request.getMethod() + "-->" + request.getRequestURI(),
                     INVALID_MOBILE_NO, mobileNo, start);
 
@@ -198,13 +210,13 @@ public class RedisOtpTokenController {
             strongAuthService.deleteFailedAttemptByMobileNo(mobileNo);
             responseDto.setHttpStatus(HttpStatus.OK.value());
             responseDto.setMessage("USER IS UNBLOCKED");
+            responseDto.setStatus(0L);
         } else {
             throw new BadRequestAlertException(request.getMethod() + "-->" + request.getRequestURI(),
                     USER_IS_NOT_BLOCKED, "USER IS NOT BLOCKED", start);
-
         }
-        responseDto.setElapsedTime(System.currentTimeMillis() - start);
         responseDtoService.createRdtoIndex(responseDto);
+        responseDto.setElapsedTime(System.currentTimeMillis() - start);
         return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
     }
 

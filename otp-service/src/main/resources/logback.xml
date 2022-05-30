@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--    defines the home address for log files-->
+    <property name="HOME_LOG" value="d:/logs/"/>
+
+    <!--    to write logs in console-->
+    <appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss:SSS} [%-5p]  [%-25.25t] [%-25.25c{1}:%-4L] [%-25.25M] -> %m%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <appender name="OTP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG}/OTP/OTP.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${HOME_LOG}/archived/OTP.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>40000KB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss:SSS} [%-5p]  [%-70.70t] [%-25.25c{1}:%-4L] [%-25.25M] --> %m%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="OTP" level="info" additivity="false">
+        <appender-ref ref="OTP"/>
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="ConsoleAppender"/>
+        <appender-ref ref="OTP"/>
+    </root>
+
+
+</configuration>
