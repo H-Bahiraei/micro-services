@@ -11,6 +11,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Mahdi Sharifi
@@ -29,6 +32,8 @@ import java.util.Map;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Document(indexName = "responsedtoindex")
+@Schema(description = "save ResponseDTO")
+
 public class ResponseDto<T> {
 
     @JsonIgnore
@@ -36,14 +41,17 @@ public class ResponseDto<T> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
+    @NotNull(message = "#message can not be null")
     @JsonProperty("message")
     @Field(type = FieldType.Text, name = "message")
     private String message;
 
+    @NotNull(message = "#httpStatus can not be null")
     @JsonProperty("httpStatus")
     @Field(type = FieldType.Integer, name = "httpStatus")
     private int httpStatus;
 
+    @NotNull(message = "#path can not be null")
     @JsonProperty("path")
     @Field(type = FieldType.Text, name = "path")
     private String path;//transient
@@ -55,13 +63,16 @@ public class ResponseDto<T> {
     @Field(type = FieldType.Text, name = "parameters")
     private String parameters;
 
+    @NotNull(message = "#reqParams can not be null")
     @JsonIgnore // dont go in json Response
     private Map<String,String> reqParams;
 
+    @NotNull(message = "#elapsedTime can not be null")
     @JsonProperty("elapsed_time")
     @Field(type = FieldType.Long, name = "elapsedTime")
     private Long elapsedTime;
 
+    @NotNull(message = "#time can not be null")
     @JsonProperty("time") // go to Json Response
     @Field(type = FieldType.Text, name = "time")
     private String time ;
@@ -75,27 +86,14 @@ public class ResponseDto<T> {
     @Field(type = FieldType.Long, name = "pagesCount")
     private Long pagesCount;// use when we need paging
 
+    @NotNull(message = "#status can not be null")
     @JsonProperty("status")
     @Field(type = FieldType.Long, name = "status")
     private Long status;
 
-
+    @NotNull(message = "#payload can not be null")
     private List<T> payload = new ArrayList<>();
 
-//      "links": [
-//    {
-//        "rel": "feed",
-//            "href": "https://example.org/friends/rss"
-//    },
-//    {
-//        "rel": "queries",
-//            "href": "https://example.org/friends/?queries"
-//    },
-//    {
-//        "rel": "template",
-//            "href": "https://example.org/friends/?template"
-//    }
-//    ]
 
     public ResponseDto() {
         elapsedTime = System.currentTimeMillis();
@@ -111,6 +109,21 @@ public class ResponseDto<T> {
         ResponseDto responseDto = new ResponseDto();
         System.out.println(JSONFormatter.fromJSON("", ResponseDto.class));
     }
+
+    //      "links": [
+//    {
+//        "rel": "feed",
+//            "href": "https://example.org/friends/rss"
+//    },
+//    {
+//        "rel": "queries",
+//            "href": "https://example.org/friends/?queries"
+//    },
+//    {
+//        "rel": "template",
+//            "href": "https://example.org/friends/?template"
+//    }
+//    ]
 
 //    public ResponseDto(int status) {
 //        this.status = status;

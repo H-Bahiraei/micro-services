@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @IntegrationTest
-public class RedisOtpTokenControllerTest {
+public class OtpTokenControllerTest {
 
     //    public static final long TIME_OUT = Duration.ofMinutes(1).getSeconds();
     public static final long TIME_OUT = 120;
