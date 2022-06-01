@@ -1,10 +1,13 @@
 package ir.bki.otpservice.apects;
 
+import ir.bki.otpservice.controller.OtpTokenController;
 import ir.bki.otpservice.util.HeaderUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +27,11 @@ import java.util.Map;
 @Aspect //let know Spring that this is an Aspect class
 @Component //Spring will consider this class as a Spring bean
 @Order(0)
-@Slf4j
+//@Slf4j
 public class LoggableAspectHandler {
+
+
+    private static final Logger log = LoggerFactory.getLogger(LoggableAspectHandler.class.getName());
 
     private final HttpServletRequest httpServletRequest;
     private final HttpServletResponse httpServletResponse;
