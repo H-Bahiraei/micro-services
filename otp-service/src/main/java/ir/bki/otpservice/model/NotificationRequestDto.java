@@ -6,7 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 /**
  * @author Mahdi Sharifi
@@ -16,9 +17,15 @@ import java.util.List;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@AllArgsConstructor @NoArgsConstructor
-public class NotificationRequestDto  extends GsonModel {
-     private String message;
+@AllArgsConstructor
+@NoArgsConstructor
+public class NotificationRequestDto extends GsonModel {
+    @NotEmpty(message = "NotEmpty is required")
+//    @Pattern(regexp ="(.)*\\{code\\}(.)*"
+//            , message = "Invalid message body ! , Pattern ")
+    private String message;
+
+
 //    List<String> messages;
 //    List<String>recipients;
 //    List<String> senders;

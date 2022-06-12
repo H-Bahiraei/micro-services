@@ -8,15 +8,23 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
+import static ir.bki.otpservice.exception.ErrorCodeConstants.Invalid_Body;
+import static ir.bki.otpservice.exception.ErrorCodeConstants.Invalid_Constraints;
 
 /**
  * @author Mahdi Sharifi
@@ -30,7 +38,7 @@ import java.util.Map;
  */
 @ControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     //------------- From JHipster------
     private static final String FIELD_ERRORS_KEY = "fieldErrors";
@@ -49,12 +57,13 @@ public class GlobalExceptionHandler {
         this.httpServletRequest = httpServletRequest;
     }
 
+
     @Loggable
     @ExceptionHandler(value = {BadRequestAlertException.class})
     public ResponseEntity<ResponseDto> handleBadRequestAlertException(BadRequestAlertException ex) {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setHttpStatus(HttpStatus.BAD_REQUEST.value());
-        responseDto.setTime(LocalDateTime.now()+"");
+        responseDto.setTime(LocalDateTime.now() + "");
         if (ex.getMessage() == null || ex.getMessage() == "")
             responseDto.setMessage("Bad request! Something wrong in client request.");
         else
@@ -63,6 +72,7 @@ public class GlobalExceptionHandler {
         responseDto.setStatus(ex.getStatusCode());
         String path = httpServletRequest.getMethod() + " "
                 + httpServletRequest.getServletPath();
+        responseDto.setPath(path);
 
         Map reqParams = new HashMap<String, String>();
 
@@ -86,19 +96,125 @@ public class GlobalExceptionHandler {
 
         responseDto.setReqParams(reqParams);
 
-//        path =  ?path + " Authorization:" + (httpServletRequest.getHeader("Authorization")) + " " :path;
-//        path =  ?path + " Pair-Data:" + (httpServletRequest.getHeader("Pair-Data")) + " " :path;
-//        path =  ?path + " Otp-Length:" + (httpServletRequest.getHeader("Otp-Length")) + " " :path;
-//        path =  ?path + " Timeout:" + (httpServletRequest.getHeader("Timeout")) + " " :path;
-//        path = ?path + " Hash-Key:" + httpServletRequest.getHeader("Hash-Key") + " " :path;
-//        path = ?path + " Code:" + (httpServletRequest.getHeader("Code")) + " " :path;
-
-
-        responseDto.setPath(path);
         responseDto.setElapsedTime(System.currentTimeMillis() - ex.getStart());
         responseDtoService.createRdtoIndex(responseDto);
         return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
     }
+
+
+    @Loggable
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        System.out.println("Handling method argument not valid exception");
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setHttpStatus(HttpStatus.BAD_REQUEST.value());
+        responseDto.setTime(LocalDateTime.now() + "");
+        responseDto.setMessage(ex.getMessage());
+        responseDto.setStatus(Invalid_Body);
+//        responseDto.setElapsedTime(System.currentTimeMillis() - ex.getStart()); //TODO Mehrad
+        String path = httpServletRequest.getMethod() + " "
+                + httpServletRequest.getServletPath();
+        responseDto.setPath(path);
+
+        Map reqParams = new HashMap<String, String>();
+
+        if (httpServletRequest.getHeader("Authorization") != null)
+            reqParams.put("Authorization", httpServletRequest.getHeader("Authorization"));
+
+        if (httpServletRequest.getHeader("Pair-Data") != null)
+            reqParams.put("Pair-Data", httpServletRequest.getHeader("Pair-Data"));
+
+        if (httpServletRequest.getHeader("Otp-Length") != null)
+            reqParams.put("Otp-Length", httpServletRequest.getHeader("Otp-Length"));
+
+        if (httpServletRequest.getHeader("Timeout") != null)
+            reqParams.put("Timeout", httpServletRequest.getHeader("Timeout"));
+
+        if (httpServletRequest.getHeader("Hash-Key") != null)
+            reqParams.put("Hash-Key", httpServletRequest.getHeader("Hash-Key"));
+
+        if (httpServletRequest.getHeader("Code") != null)
+            reqParams.put("Code", httpServletRequest.getHeader("Code"));
+
+        responseDto.setReqParams(reqParams);
+
+
+        responseDtoService.createRdtoIndex(responseDto);
+
+        return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
+    }
+
+
+    @Loggable
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setHttpStatus(HttpStatus.BAD_REQUEST.value());
+        responseDto.setTime(LocalDateTime.now() + "");
+        responseDto.setMessage(e.getMessage());
+        responseDto.setStatus(Invalid_Constraints);
+//        responseDto.setElapsedTime(System.currentTimeMillis() - ex.getStart()); //TODO Mehrad
+        String path = httpServletRequest.getMethod() + " "
+                + httpServletRequest.getServletPath();
+        responseDto.setPath(path);
+
+        Map reqParams = new HashMap<String, String>();
+
+        if (httpServletRequest.getHeader("Authorization") != null)
+            reqParams.put("Authorization", httpServletRequest.getHeader("Authorization"));
+
+        if (httpServletRequest.getHeader("Pair-Data") != null)
+            reqParams.put("Pair-Data", httpServletRequest.getHeader("Pair-Data"));
+
+        if (httpServletRequest.getHeader("Otp-Length") != null)
+            reqParams.put("Otp-Length", httpServletRequest.getHeader("Otp-Length"));
+
+        if (httpServletRequest.getHeader("Timeout") != null)
+            reqParams.put("Timeout", httpServletRequest.getHeader("Timeout"));
+
+        if (httpServletRequest.getHeader("Hash-Key") != null)
+            reqParams.put("Hash-Key", httpServletRequest.getHeader("Hash-Key"));
+
+        if (httpServletRequest.getHeader("Code") != null)
+            reqParams.put("Code", httpServletRequest.getHeader("Code"));
+
+        responseDto.setReqParams(reqParams);
+
+        responseDtoService.createRdtoIndex(responseDto);
+
+        return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
+    }
+
+
+//    @Override
+//    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+//                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
+//        System.out.println("HHHHHHandling method argument not valid exception");
+//        ResponseDto responseDto = new ResponseDto();
+//        responseDto.setMessage(ex.getMessage());
+//        return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
+//    }
+
+//    @Override
+//    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+//            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+//        System.out.println("ex = " + ex + ", hhhhhhhhhhhhhhhhhhhhhhhheaders = ");
+//        ResponseDto responseDto = new ResponseDto();
+//        responseDto.setMessage(ex.getMessage());
+//        return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
+//
+//    }
+
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<ResponseDto> handleMethodArgumentNotValid(
+//            MethodArgumentNotValidException ex) {
+//        System.out.println("ex = " + ex + ", hhhhhhhhhhhhhhhhhhhhhhhheaders = ");
+//        ResponseDto responseDto = new ResponseDto();
+//        responseDto.setMessage(ex.getMessage());
+//        return ResponseEntity.status(responseDto.getHttpStatus()).body(responseDto);
+////                "Validation error. Check 'errors' field for details."
+//    }
+
 
 //    @ExceptionHandler
 //    public ResponseEntity<ResponseDto> handleConcurrencyFailure(ConcurrencyFailureException ex, NativeWebRequest request) {
