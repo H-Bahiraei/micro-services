@@ -1,6 +1,6 @@
 package ir.bki.notificationservice.controller;
 
-import ir.bki.notificationservice.dto.MagfaDto;
+import ir.bki.notificationservice.dto.MagfaResponseDto;
 import ir.bki.notificationservice.service.client.MagfaFeignClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,15 +24,15 @@ class MagfaSmsControllerTest {
     @MockBean
     MagfaFeignClient magfaFeignClient;
 
-    MagfaSmsController magfaSmsController;
+    NotificationController notificationController;
 
     @BeforeEach
     void setUp() {
-        MagfaDto magfaDto = new MagfaDto();
+        MagfaResponseDto magfaDto = new MagfaResponseDto();
         magfaDto.setStatus(0);
         magfaDto.setBalance(new BigInteger(10000 + ""));
         Mockito.when(magfaFeignClient.getBalance()).thenReturn(magfaDto);
-        magfaSmsController = new MagfaSmsController(magfaFeignClient);
+        notificationController = new NotificationController(magfaFeignClient);
     }
 
 //    @Test

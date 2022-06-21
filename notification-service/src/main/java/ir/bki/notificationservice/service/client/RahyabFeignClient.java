@@ -1,11 +1,8 @@
 package ir.bki.notificationservice.service.client;
 
 import feign.Headers;
-import ir.bki.notificationservice.dto.MagfaDto;
-import ir.bki.notificationservice.dto.MagfaRequestDto;
 import ir.bki.notificationservice.dto.RahyabDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,10 +32,10 @@ public interface RahyabFeignClient {
     )
     @Headers({"accept","ut-8"})
     RahyabDto send(@RequestParam(value="username") String username,
-                  @RequestParam(value="password") String password,
-                  @RequestParam(value="from") String form,
-                  @RequestParam(value="to") String to,
-                  @RequestParam(value="farsi") boolean farsi,
-                  @RequestParam(value="message") String message
-                  );
+                   @RequestParam(value="password") String password,
+                   @RequestParam(value="from") String form,
+                   @RequestParam(value="to") String to,
+                   @RequestParam(value="farsi") boolean farsi,
+                   @RequestParam(value="message") String message
+    );
 }

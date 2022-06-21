@@ -8,6 +8,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -165,11 +167,10 @@ public final class JSONFormatter {
     }
 
     //ArrayList<Element> arrayList = new ArrayList<Element>(Arrays.asList(array));
-//    public static <T> List<T> fromJSONArray(String jsonArray, Class<T> clazz) {
-//        System.out.println("hiiiiiiiiii, i am in JSON Formatter");
-//        Type listType = new TypeToken<ArrayList<T>>(){}.getType();
-//        return  new Gson().fromJson(jsonArray, listType);
-//    }
+    public static <T> List<T> fromJSONArray(String jsonArray, Class<T> clazz) {
+        Type listType = new TypeToken<ArrayList<T>>(){}.getType();
+        return  new Gson().fromJson(jsonArray, listType);
+    }
 //    public static <T> T fromJSONArrayNew(String jsonArray, Class<T> clazz) {
 //        T t = null;
 //        if (clazz.isAssignableFrom(jsonArray.getClass())) {

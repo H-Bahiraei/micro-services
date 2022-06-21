@@ -19,4 +19,5 @@ public class MagfaMessageDto {
     private String recipient;
     private String alphabet;
     private Long id;
+
 }

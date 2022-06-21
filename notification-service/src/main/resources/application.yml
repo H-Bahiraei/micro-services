@@ -3,6 +3,36 @@ spring:
     name: notification-service
   profiles:
     active: dev
+  kafka:
+    consumer:
+      bootstrap-servers: 127.0.0.1:9092
+      group-id: group_id
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+  redis.host: localhost
+  redis.port: 6379
+
+#ibm:
+#  mq:
+#    queueManager: MQBATCHSMS
+#    channel: CHANNEL1
+#    connName: 10.0.85.125(1425)
+#    user: admin
+#    password: passw0rd
+
+ibm:
+  mq:
+    queueManager: MQBATCHSMS
+    channel: CHANNEL1
+    connName: 10.0.85.125(1425)
+    user: admin
+    password: passw0rd
 
 #eureka:
 #  instance:
@@ -20,9 +50,9 @@ server:
 
 logging:
   level:
-    com.netflix: WARN
+    com.netflix: INFO
     org.springframework:
-      web: debug
+      web: INFO
       filter:
         CommonsRequestLoggingFilter: debug
       context: INFO

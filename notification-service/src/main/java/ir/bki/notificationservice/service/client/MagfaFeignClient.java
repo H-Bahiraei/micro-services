@@ -1,6 +1,6 @@
 package ir.bki.notificationservice.service.client;
 
-import ir.bki.notificationservice.dto.MagfaDto;
+import ir.bki.notificationservice.dto.MagfaResponseDto;
 import ir.bki.notificationservice.dto.MagfaRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +21,7 @@ public interface MagfaFeignClient {
             method = RequestMethod.GET,
             value = "/balance",
             consumes = "application/json")
-    MagfaDto getBalance();
+    MagfaResponseDto getBalance();
 
 
     @RequestMapping(
@@ -30,5 +30,5 @@ public interface MagfaFeignClient {
             consumes = "application/json",
             produces = "application/json"
     )
-    MagfaDto send(@RequestBody MagfaRequestDto body);
+    MagfaResponseDto send(@RequestBody MagfaRequestDto body);
 }

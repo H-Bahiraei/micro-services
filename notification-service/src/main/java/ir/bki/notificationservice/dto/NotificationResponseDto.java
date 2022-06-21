@@ -1,7 +1,10 @@
 package ir.bki.notificationservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -14,14 +17,11 @@ import java.util.List;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MagfaDto {
-    List<MagfaMessageDto> messages;
-    List<String> recipients;
-    List<String> senders;
-    List<String> uids;
-    List<String> encoding;
-    List<String> udhs;
+@AllArgsConstructor
+@NoArgsConstructor
+public class NotificationResponseDto {
     private Integer status;
     private BigInteger balance;
-    private Long id;
+    private Long mid;
+    private List<MagfaMessageDto> messages;
 }
