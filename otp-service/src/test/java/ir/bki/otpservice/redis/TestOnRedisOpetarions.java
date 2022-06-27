@@ -1,11 +1,9 @@
 package ir.bki.otpservice.redis;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import ir.bki.otpservice.model.FailedAttempt;
-import ir.bki.otpservice.service.Author;
-import ir.bki.otpservice.service.RedisHelperImpl;
-import ir.bki.otpservice.service.StrongAuthService;
-import org.apache.commons.lang3.time.DateUtils;
+
+import ir.bki.otpservice.service.redis.RedisHelperImpl;
+import ir.bki.otpservice.service.redis.StrongAuthService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.Date;
-import java.util.Map;
 
 /**
  * @author Mahdi Sharifi

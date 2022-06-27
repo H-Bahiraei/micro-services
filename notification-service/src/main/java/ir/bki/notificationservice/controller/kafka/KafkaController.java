@@ -1,7 +1,7 @@
-package ir.bki.notificationservice.controller;
+package ir.bki.notificationservice.controller.kafka;
 
 import ir.bki.notificationservice.dto.NotificationRequestDto;
-import ir.bki.notificationservice.service.kafka.kafkaProducer;
+import ir.bki.notificationservice.service.kafka.KafkaProducer;
 import ir.bki.notificationservice.utils.JSONFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +20,10 @@ import java.util.List;
 @Slf4j
 public class KafkaController {
 
-    private final kafkaProducer kafkaProducer;
 
-    public KafkaController(kafkaProducer kafkaProducer) {
+    private final KafkaProducer kafkaProducer;
+
+    public KafkaController(KafkaProducer kafkaProducer) {
         this.kafkaProducer = kafkaProducer;
     }
 
@@ -45,6 +46,6 @@ public class KafkaController {
 
 //    @GetMapping(value = "/publish") //http://localhost:8082/kafka/publish?message=HHHHHHHHHH
 //    public void sendMessageToKafkaTopic(@RequestParam String message) {
-//        this.kafkaProducer.sendMessage(message);
+//        this.KafkaProducer.sendMessage(message);
 //    }
 }

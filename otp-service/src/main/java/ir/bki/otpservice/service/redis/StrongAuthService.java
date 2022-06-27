@@ -1,8 +1,8 @@
-package ir.bki.otpservice.service;
+package ir.bki.otpservice.service.redis;
 
 import ir.bki.otpservice.apects.Loggable;
-import ir.bki.otpservice.model.CacheAuth;
-import ir.bki.otpservice.model.FailedAttempt;
+import ir.bki.otpservice.repository.model.CacheAuth;
+import ir.bki.otpservice.repository.model.FailedAttempt;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;

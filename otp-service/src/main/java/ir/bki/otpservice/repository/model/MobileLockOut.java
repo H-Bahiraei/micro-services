@@ -1,4 +1,4 @@
-package ir.bki.otpservice.model;//package ir.bki.model.smsAuth;
+package ir.bki.otpservice.repository.model;//package ir.bki.model.smsAuth;
 //
 //import ir.bki.util.GsonModel;
 //import lombok.Data;

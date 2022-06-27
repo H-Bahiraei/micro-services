@@ -18,14 +18,6 @@ spring:
   redis.host: localhost
   redis.port: 6379
 
-#ibm:
-#  mq:
-#    queueManager: MQBATCHSMS
-#    channel: CHANNEL1
-#    connName: 10.0.85.125(1425)
-#    user: admin
-#    password: passw0rd
-
 ibm:
   mq:
     queueManager: MQBATCHSMS

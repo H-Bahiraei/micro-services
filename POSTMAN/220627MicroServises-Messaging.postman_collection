@@ -1,0 +1,370 @@
+{
+	"info": {
+		"_postman_id": "23f0c533-6fa3-4e2e-af18-9a00f71ba6f0",
+		"name": "MicroServises-Messaging",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19998047"
+	},
+	"item": [
+		{
+			"name": "IBM mq",
+			"item": [
+				{
+					"name": "Send SMS-MQ",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n            \"mobile_no\":\"09216017504\",\r\n            \"message\": \" mq بانک \\n کد فعالسازی شما: \\n ${code} \",\r\n            \"uid\": \"2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/mq/publishMessage",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"mq",
+								"publishMessage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReceiveMessage-MQ",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/mq/receiveMessage",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"mq",
+								"receiveMessage"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "KafkaController-noti-ms",
+			"item": [
+				{
+					"name": "Send SMS_Kafka Batch",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "   [\r\n        {\r\n            \"mobile_no\":\"09216017504\",\r\n            \"message\": \"kafka بانک کافکا1 \\n کد فعالسازی شما: \\n ${code} \",\r\n            \"uid\": \"2\"\r\n        },\r\n        {\r\n            \"mobile_no\":\"09216017504\",\r\n            \"message\": \"kafka بانک کافکا2 \\n کد فعالسازی شما: \\n ${code} \",\r\n            \"uid\": \"2\"\r\n        }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/kafka/publishMessages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"kafka",
+								"publishMessages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send SMS_Kafka",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n            \"mobile_no\":\"09216017504\",\r\n            \"message\": \"همراه کافکا بانک \\n کد فعالسازی شما: \\n ${code} \",\r\n            \"uid\": \"2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/kafka/publishMessage",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"kafka",
+								"publishMessage"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification-ms",
+			"item": [
+				{
+					"name": "sendBatch",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "   [\r\n        {\r\n            \"mobile_no\":\"09216017504\",\r\n            \"message\": \"همراه بانک شریفی  \\n کد فعالسازی شما: \\n ${code} \",\r\n            \"uid\": \"2\"\r\n        },\r\n        {\r\n            \"mobile_no\":\"09216017504\",\r\n            \"message\": \"همراه بانک مهراد \\n کد فعالسازی شما: \\n ${code} \",\r\n            \"uid\": \"3\"\r\n        }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/v1/sms/notifications",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"v1",
+								"sms",
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send SMS",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"همراه بانک \\n کد فعالسازی شما: \\n ${code} \"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/v1/sms/notification/09216017504",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"v1",
+								"sms",
+								"notification",
+								"09216017504"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "otp-ms",
+			"item": [
+				{
+					"name": "Verifiy SOTP Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Code",
+								"value": "43234",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "abc",
+								"type": "text"
+							},
+							{
+								"key": "Hash-Key",
+								"value": "HC:09216017504:p0ULnZNhrg",
+								"type": "text"
+							},
+							{
+								"key": "Pair-Data",
+								"value": "PairData",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/v1/otp/mobiles/09216017504/verification",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"otp",
+								"mobiles",
+								"09216017504",
+								"verification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate SOTP code",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Pair-Data",
+								"value": "1",
+								"type": "text"
+							},
+							{
+								"key": "Timeout",
+								"value": "120",
+								"type": "text"
+							},
+							{
+								"key": "Otp-Length",
+								"value": "5",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "ABC",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"بانک \\n کد فعالسازی شما: \\n ${code} \"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/otp/mobiles/09216017504/generation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"otp",
+								"mobiles",
+								"09216017504",
+								"generation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UnBlocking",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "description",
+								"value": "new desc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/v1/otp/mobiles/09216017504/unblocking",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"otp",
+								"mobiles",
+								"09216017504",
+								"unblocking"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RedisContriller-noti-ms",
+			"item": [
+				{
+					"name": "Send SMS_Redis",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n            \"mobile_no\":\"09216017504\",\r\n            \"message\": \" redis بانک \\n کد فعالسازی شما: \\n ${code} \",\r\n            \"uid\": \"2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/redis/publishMessage",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"redis",
+								"publishMessage"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

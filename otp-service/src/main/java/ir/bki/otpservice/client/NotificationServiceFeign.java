@@ -1,10 +1,9 @@
 package ir.bki.otpservice.client;
 
 import ir.bki.otpservice.apects.Loggable;
-import ir.bki.otpservice.model.NotificationRequestDto;
-import ir.bki.otpservice.model.ResponseDto;
+import ir.bki.otpservice.repository.model.NotificationRequestDto;
+import ir.bki.otpservice.repository.model.ResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

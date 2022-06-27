@@ -1,4 +1,4 @@
-package ir.bki.notificationservice.controller.ibm;
+package ir.bki.notificationservice.config.ibm;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
@@ -11,11 +11,12 @@ import javax.jms.ConnectionFactory;
 //  https://spring.io/guides/gs/messaging-jms/
 @Configuration
 @Slf4j
-public class JmsConfig {
+public class IBMJmsConfig {
+
     @Bean
     public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
                                                     DefaultJmsListenerContainerFactoryConfigurer configurer) {
-        log.error("#JmsListenerContainerFactory: "+connectionFactory);
+        log.info("#JmsListenerContainerFactory: "+connectionFactory);
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         // This provides all boot's default to this factory, including the message converter
         configurer.configure(factory, connectionFactory);

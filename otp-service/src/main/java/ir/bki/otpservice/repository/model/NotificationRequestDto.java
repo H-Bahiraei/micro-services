@@ -1,4 +1,4 @@
-package ir.bki.otpservice.model;
+package ir.bki.otpservice.repository.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

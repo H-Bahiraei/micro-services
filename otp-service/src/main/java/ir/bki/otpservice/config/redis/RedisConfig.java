@@ -1,17 +1,13 @@
-package ir.bki.otpservice.config;
+package ir.bki.otpservice.config.redis;
 
-import ir.bki.otpservice.listener.MessagePublisher;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnection;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericToStringSerializer;
 
 /**
  * @author Mahdi Sharifi
@@ -21,7 +17,7 @@ import org.springframework.data.redis.serializer.GenericToStringSerializer;
  */
 @Configuration
 @Slf4j
-public class JedisConfig {
+public class RedisConfig {
 
     @Value("${spring.redis.host}")
     private String redisServer;

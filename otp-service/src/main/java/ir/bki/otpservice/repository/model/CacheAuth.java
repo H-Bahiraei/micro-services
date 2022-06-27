@@ -1,4 +1,4 @@
-package ir.bki.otpservice.model;
+package ir.bki.otpservice.repository.model;
 import lombok.Data;
 
 import java.util.Date;

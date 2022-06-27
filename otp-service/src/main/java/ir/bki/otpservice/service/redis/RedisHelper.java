@@ -1,4 +1,4 @@
-package ir.bki.otpservice.service;
+package ir.bki.otpservice.service.redis;
 
 /**
  * @author Mahdi Sharifi

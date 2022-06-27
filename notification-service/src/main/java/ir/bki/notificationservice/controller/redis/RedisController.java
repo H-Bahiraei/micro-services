@@ -1,7 +1,7 @@
-package ir.bki.notificationservice.controller;
+package ir.bki.notificationservice.controller.redis;
 
 import ir.bki.notificationservice.dto.NotificationRequestDto;
-import ir.bki.notificationservice.service.kafka.kafkaProducer;
+import ir.bki.notificationservice.service.kafka.KafkaProducer;
 import ir.bki.notificationservice.service.redis.RedisMessagePublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class RedisController {
     RedisMessagePublisher redisMessagePublisher;
 
     @Autowired
-    private kafkaProducer kafkaProducer;
+    private KafkaProducer kafkaProducer;
 
     @GetMapping(value = "/publishMessage") //http://localhost:8082/kafka/publish?message=HHHHHHHHHH
     public void sendMessageToRedis(@RequestBody NotificationRequestDto notificationRequestDto ) {

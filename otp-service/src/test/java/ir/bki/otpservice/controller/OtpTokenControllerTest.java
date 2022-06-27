@@ -1,11 +1,12 @@
 //package ir.bki.otpservice.controller;
 //
 //import com.google.gson.Gson;
-//import ir.bki.otpservice.IntegrationTest;
+//import ir.bki.otpservice.controller.IntegrationTest;
 //import ir.bki.otpservice.model.NotificationRequestDto;
 //import ir.bki.otpservice.model.ResponseDto;
-//import ir.bki.otpservice.service.RedisHelperImpl;
-//import ir.bki.otpservice.service.StrongAuthService;
+//import ir.bki.otpservice.repository.model.NotificationRequestDto;
+//import ir.bki.otpservice.service.redis.RedisHelperImpl;
+//import ir.bki.otpservice.service.redis.StrongAuthService;
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.test.web.servlet.MockMvc;

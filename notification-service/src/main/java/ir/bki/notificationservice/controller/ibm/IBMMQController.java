@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/mq")
 @EnableJms
-public class MqController {
+public class IBMMQController {
 
     @Autowired
     private JmsTemplate jmsTemplate;

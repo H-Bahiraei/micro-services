@@ -1,8 +1,10 @@
 package ir.bki.notificationservice.config.redis;
 
+import ir.bki.notificationservice.service.kafka.KafkaProducer;
 import ir.bki.notificationservice.service.redis.RedisMessagePublisher;
-import ir.bki.notificationservice.service.redis.RedisMessageSubscriber;
+import ir.bki.notificationservice.service.redis.RedisMessageSubscriberAdapter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,15 +24,14 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
  */
 @Configuration
 @Slf4j
-public class JedisConfig {
+public class RedisConfig {
 
+    @Autowired
+    KafkaProducer kafkaProducer;
     @Value("${spring.redis.host}")
     private String redisServer;
-
     @Value("${spring.redis.port}")
     private String redisPort;
-
-
 //    @Bean
 //    JedisConnectionFactory jedisConnectionFactory() {
 //        String hostname = serviceConfig.getRedisServer();
@@ -42,7 +43,7 @@ public class JedisConfig {
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
-        log.debug("#hostname: "+redisServer+" ;"+redisPort);
+        log.debug("#hostname: " + redisServer + " ;" + redisPort);
         String hostname = redisServer;
         int port = Integer.parseInt(redisPort);
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(hostname, port);
@@ -54,13 +55,29 @@ public class JedisConfig {
     RedisMessageListenerContainer redisContainer() {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(messageListener(), topic());
+//        container.addMessageListener(messageListener(), topic());
+        container.addMessageListener(messageListenerAdapter(), topic());
         return container;
     }
+
     @Bean
-    MessageListenerAdapter messageListener() {
-        return new MessageListenerAdapter(new RedisMessageSubscriber());
+    MessageListenerAdapter messageListenerAdapter() {
+        log.info("###MessageListenerAdapter");
+        return new RedisMessageSubscriberAdapter();
     }
+
+//    @Bean
+//    MessageListenerAdapter messageListener() {
+//        log.info("###MessageListenerAdapter");
+////        return new MessageListenerAdapter(new RedisMessageSubscriber());
+//        return new MessageListenerAdapter(new RedisConsumerNew());
+//    }
+
+//    @Bean
+//    MessageListener messageListener() {
+//        log.info("###messageListener");
+//        return new RedisMessageSubscriber();
+//    }
 
     @Bean
     MessagePublisher redisPublisher() {

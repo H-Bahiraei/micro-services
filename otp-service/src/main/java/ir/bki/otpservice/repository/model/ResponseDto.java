@@ -1,4 +1,4 @@
-package ir.bki.otpservice.model;
+package ir.bki.otpservice.repository.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

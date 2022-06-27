@@ -8,24 +8,28 @@ package ir.bki.notificationservice.service.kafka;
  */
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.logging.Logger;
 
-@Service
-public class kafkaProducer {
+@Component
+public class KafkaProducer {
 
-    private final Logger logger = Logger.getLogger("kafkaProducer");
+    private final Logger logger = Logger.getLogger("KafkaProducer");
     private static final String TOPIC = "sample_topic";
     private static final String TOPIC_BATCH = "sample_topic_batch";
 
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    public KafkaProducer(KafkaTemplate<String, String> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
 
     public void sendMessage(String message) {
         this.kafkaTemplate.send(TOPIC, message);
-        logger.info("#Published message: "+message);
+        logger.info("#Published message: "+ message );
     }
 
     public void sendMessageBatch(String messageList) {

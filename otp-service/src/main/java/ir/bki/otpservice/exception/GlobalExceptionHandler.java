@@ -1,8 +1,8 @@
 package ir.bki.otpservice.exception;
 
 import ir.bki.otpservice.apects.Loggable;
-import ir.bki.otpservice.model.ResponseDto;
-import ir.bki.otpservice.service.impl.ResponseDtoService;
+import ir.bki.otpservice.repository.model.ResponseDto;
+import ir.bki.otpservice.service.ELS.ResponseDtoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

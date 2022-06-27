@@ -1,5 +1,6 @@
-package ir.bki.otpservice;
+package ir.bki.otpservice.controller;
 
+import ir.bki.otpservice.OtpServiceApplication;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 

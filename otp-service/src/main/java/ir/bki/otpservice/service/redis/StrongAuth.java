@@ -1,6 +1,6 @@
-package ir.bki.otpservice.service;
+package ir.bki.otpservice.service.redis;
 
-import ir.bki.otpservice.model.CacheAuth;
+import ir.bki.otpservice.repository.model.CacheAuth;
 
 /**
  * @author Mahdi Sharifi

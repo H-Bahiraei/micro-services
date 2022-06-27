@@ -1,4 +1,4 @@
-package ir.bki.otpservice.model;
+package ir.bki.otpservice.repository.model;
 
 // TODO Comment : when mistake in auth create this obj and set in redis
 

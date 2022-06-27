@@ -1,6 +1,6 @@
 package ir.bki.otpservice.repository;
 
-import ir.bki.otpservice.model.OtpEntity;
+import ir.bki.otpservice.repository.model.OtpEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

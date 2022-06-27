@@ -11,5 +11,7 @@ import org.springframework.stereotype.Repository;
  * @since 4/5/2022
  */
 @Repository
-public interface OtpTokenRepository extends CrudRepository<OtpToken, String> {}
+public interface OtpTokenRepository extends CrudRepository<OtpToken, String> {
+
+}
 

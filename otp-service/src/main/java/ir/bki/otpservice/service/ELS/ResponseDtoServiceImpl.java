@@ -1,9 +1,7 @@
-package ir.bki.otpservice.service;
+package ir.bki.otpservice.service.ELS;
 
-import ir.bki.otpservice.apects.Loggable;
-import ir.bki.otpservice.model.ResponseDto;
+import ir.bki.otpservice.repository.model.ResponseDto;
 import ir.bki.otpservice.repository.ResponseDtoRepository;
-import ir.bki.otpservice.service.impl.ResponseDtoService;
 import ir.bki.otpservice.util.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

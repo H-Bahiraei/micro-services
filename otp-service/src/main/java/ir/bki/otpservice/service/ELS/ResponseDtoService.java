@@ -1,6 +1,6 @@
-package ir.bki.otpservice.service.impl;
+package ir.bki.otpservice.service.ELS;
 
-import ir.bki.otpservice.model.ResponseDto;
+import ir.bki.otpservice.repository.model.ResponseDto;
 
 import java.util.List;
 

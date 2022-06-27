@@ -1,4 +1,4 @@
-package ir.bki.otpservice.service;
+package ir.bki.otpservice.service.redis;
 
 /**
  * @author Mahdi Sharifi
@@ -12,11 +12,9 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 //https://programmer.group/example-of-using-redis-in-spring-boot.html
