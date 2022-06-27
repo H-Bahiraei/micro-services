@@ -1,5 +1,10 @@
 package ir.bki.notificationservice.config.ibm;
 
+/**
+ * @author Mahdi Sharifi
+ * @version 2022.1.1
+ * https://www.linkedin.com/in/mahdisharifi/
+ */
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;

@@ -7,6 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author Mahdi Sharifi
+ * @version 2022.1.1
+ * https://www.linkedin.com/in/mahdisharifi/
+ * @since 1/12/2022
+ */
+
 @Service
 @Slf4j
 public class IBMJmsReceiver {
@@ -22,3 +29,4 @@ public class IBMJmsReceiver {
     }
 
 }
+

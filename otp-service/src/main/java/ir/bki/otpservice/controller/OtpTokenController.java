@@ -7,6 +7,7 @@ import ir.bki.otpservice.apects.Loggable;
 import ir.bki.otpservice.client.NotificationServiceFeign;
 import ir.bki.otpservice.exception.BadRequestAlertException;
 import ir.bki.otpservice.repository.model.NotificationRequestDto;
+import ir.bki.otpservice.repository.model.OTPRequestDto;
 import ir.bki.otpservice.repository.model.ResponseDto;
 import ir.bki.otpservice.service.redis.StrongAuthService;
 import ir.bki.otpservice.service.ELS.ResponseDtoService;
@@ -100,7 +101,7 @@ public class OtpTokenController {
             @Valid
             @Parameter(description = "message body for send end user")
             @RequestBody
-                    NotificationRequestDto messageBodyRequest
+                    OTPRequestDto messageBodyRequest
             ,
             HttpServletRequest request) throws BadRequestAlertException {
 
@@ -128,7 +129,7 @@ public class OtpTokenController {
             String randomString = strongAuthService.generateStringRandom(10);
             String clientHashKey = "HC" + SEPARATOR + mobileNo + SEPARATOR + randomString; // This will send to client
             String cacheKey = clientHashKey + SEPARATOR + code;
-            strongAuthService.put(cacheKey, pairData); // cache key: HC:09216017504:TylIvJcoQa:66688 pairData: 20000;transfer;application;ib;tr12345
+            strongAuthService.put(cacheKey, pairData); // cache key: HC:989216017504:TylIvJcoQa:66688 pairData: 20000;transfer;application;ib;tr12345
             strongAuthService.expire(cacheKey, Duration.ofSeconds(timeout));
             payload.add(clientHashKey);//Will return to client: HC:989176323629:XtLOANJCKa ; Client must send it in verify request
             NotificationRequestDto notificationRequestDto = new NotificationRequestDto(messageForSend, mobileNo);
@@ -194,6 +195,7 @@ public class OtpTokenController {
                     USER_IS_Blocked, "user is blocked", start);
 
         } else {
+            //TODO: 0912 -->98912
             String cacheKey = clientHashKey + SEPARATOR + code;//HC:989176323629:XtLOANJCKa:12345
             String cacheValue = strongAuthService.get(cacheKey); //HC:989176323629:XtLOANJCKa:12345
 //            log.info("cacheKey: " + cacheKey + " ;cacheValue: " + cacheValue);

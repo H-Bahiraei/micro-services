@@ -6,6 +6,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author H-Bahiraei
+ * Created on 6/27/2022
+ */
+
 @Service
 public class RedisMessagePublisher implements MessagePublisher {
 

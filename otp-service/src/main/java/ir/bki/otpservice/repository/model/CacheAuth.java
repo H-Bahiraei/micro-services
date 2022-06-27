@@ -3,9 +3,15 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * @author H-Bahiraei
+ * Created on 6/27/2022
+ */
+
 // TODO Comment :  obj auth code is cacheAuth
 
 @Data
+
 public class CacheAuth  {
 
     public CacheAuth(){};

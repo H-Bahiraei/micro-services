@@ -3,7 +3,8 @@ package ir.bki.otpservice.exception;
 import java.net.URI;
 
 /**
- * @author Bahiraei
+ * @author H-Bahiraei
+ * Created on 6/27/2022
  */
 public final class ErrorConstants {
 

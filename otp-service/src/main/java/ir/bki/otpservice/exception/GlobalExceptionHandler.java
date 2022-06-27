@@ -36,6 +36,9 @@ import static ir.bki.otpservice.exception.ErrorCodeConstants.Invalid_Constraints
  * Controller advice to translate the server side exceptions to client-friendly json structures.
  * The error response follows RFC7807 - Problem Details for HTTP APIs (https://greenbytes.de/tech/webdav/rfc7807.html).
  */
+
+
+
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {

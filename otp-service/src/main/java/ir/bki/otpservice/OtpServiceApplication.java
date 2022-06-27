@@ -5,6 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+/**
+ * @author Mahdi Sharifi
+ * @version 2022.1.1
+ * https://www.linkedin.com/in/mahdisharifi/
+ * @since 1/12/2022
+ */
 
 @SpringBootApplication
 @EnableEurekaClient

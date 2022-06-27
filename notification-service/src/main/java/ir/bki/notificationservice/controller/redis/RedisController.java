@@ -7,6 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author H-Bahiraei
+ * Created on 6/27/2022
+ */
+
 @RestController
 @RequestMapping(value = "/redis")
 @Slf4j

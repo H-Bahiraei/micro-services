@@ -7,6 +7,13 @@ import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.*;
 
+
+/**
+ * @author Mahdi Sharifi
+ * @version 2022.1.1
+ * https://www.linkedin.com/in/mahdisharifi/
+ * @since 1/12/2022
+ */
 //https://developer.ibm.com/tutorials/mq-jms-application-development-with-spring-boot/
 @RestController
 @RequestMapping(value = "/mq")
