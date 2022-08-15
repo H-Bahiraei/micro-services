@@ -31,7 +31,7 @@ import java.util.Map;
 public class LoggableAspectHandler {
 
 
-    private static final Logger log = LoggerFactory.getLogger(LoggableAspectHandler.class.getName());
+    private static final Logger log = LoggerFactory.getLogger("OTP-ms"); // برای لاگ اکسپشن ها یک دایرکتوری جدا باید در نظر بگیریم
 
     private final HttpServletRequest httpServletRequest;
     private final HttpServletResponse httpServletResponse;
@@ -61,6 +61,7 @@ public class LoggableAspectHandler {
         String rest = httpServletRequest.getMethod() + " " + httpServletRequest.getServletPath();
 
         String clientIp = HeaderUtil.getRequestClientIpComplete(httpServletRequest);
+
         Object result = joinPoint.proceed();
 
         Map<String, String> mapResponse = HeaderUtil.getHeadersInfo(httpServletResponse);

@@ -133,13 +133,8 @@ public class OtpTokenController {
             strongAuthService.expire(cacheKey, Duration.ofSeconds(timeout));
             payload.add(clientHashKey);//Will return to client: HC:989176323629:XtLOANJCKa ; Client must send it in verify request
             NotificationRequestDto notificationRequestDto = new NotificationRequestDto(messageForSend, mobileNo);
-//            ResponseDto<String> responseDtoSms = notificationServiceFeign.send(mobileNo, notificationRequestDto);
-//            ResponseDto<String> responseDtoSms = notificationServiceFeign.send(notificationRequestDto);
-            kafkaProducer.sendMessage(notificationRequestDto.toJSON()); //TODO It is your EDEN
-//            log.info("PUT->cacheKey:" + cacheKey + " ;  value: " + pairData);
-//            log.info("#responseDtoSms = " + responseDtoSms);
-//            if (responseDtoSms != null)
-//                payload.add(responseDtoSms.getPayload().get(0));
+            ResponseDto<String> responseDtoSms = notificationServiceFeign.send(mobileNo, notificationRequestDto); // TODO Mehrad: if it throws an Exception ...
+//            System.err.println(responseDtoSms);
 
             responseDto.setPath(request.getMethod() + " "
                     + request.getServletPath());

@@ -4,6 +4,7 @@ import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
+import ir.bki.notificationservice.apects.LoggableHTTP;
 import ir.bki.notificationservice.dto.*;
 import ir.bki.notificationservice.log.LoggerNamesEnum;
 import ir.bki.notificationservice.service.client.MagfaFeignClient;
@@ -32,7 +33,7 @@ import java.util.concurrent.TimeoutException;
 @RequestMapping("v1/sms")
 @Slf4j
 public class NotificationController {
-    private static final Logger MAGFA_LOGGER = LoggerFactory.getLogger(LoggerNamesEnum.MAGFA.getDesc());
+    private static final Logger MAGFA_LOGGER = LoggerFactory.getLogger(LoggerNamesEnum.magfa.getDesc());
 
     private final MagfaFeignClient magfaFeignClient;
 
@@ -72,43 +73,47 @@ public class NotificationController {
                 .body("Too many request - No further calls are accepted");
     }
 
+    @LoggableHTTP
     @PostMapping("/notification/{mobile-no}")
-    public ResponseEntity<ResponseDto<MagfaMessageDto>> sendOne(@PathVariable("mobile-no") String mobileNo
+    public ResponseDto sendOne(@PathVariable("mobile-no") String mobileNo
             , @RequestBody NotificationRequestDto notificationRequestDto) { //, @QueryParam("provider") String provider
         MAGFA_LOGGER.info("mobileNo = " + mobileNo + ", notificationRequestDto = " + notificationRequestDto.getMessage());
-        notificationRequestDto.setMobileNo(mobileNo);
-        return this.sendBatch(List.of(notificationRequestDto));
-//
-//        List<String> payload = new ArrayList<>();
-//        ResponseDto<String> responseDto = new ResponseDto<>(payload);
-//
-//        MagfaRequestDto magfaDto =  MagfaRequestDto.builder()
-//                .recipients(List.of(mobileNo))
-//                .senders(List.of(magfaNumber))
-//                .build();
-//
-//        magfaDto.setMessages(List.of(notificationRequestDto.getMessage()));
-//        MagfaResponseDto magfaResponseDto = magfaFeignClient.send(magfaDto);
-//        MagfaMessageDto magfaMessageDto;
-//        if (magfaResponseDto != null && magfaResponseDto.getResponses() != null) {
-//            magfaMessageDto = magfaResponseDto.getResponses().get(0);
-//            payload.add(magfaMessageDto.getId() + "");
-//        }
-//        MAGFA_LOGGER.debug("#magfaDto1: " + magfaResponseDto);
-//        if (magfaResponseDto != null) {
-//            responseDto.setStatusCode(magfaResponseDto.getStatus());
-//            if (magfaResponseDto.getStatus() == 0)
-//                responseDto.setMessage("موفق");
-//        } else {
-//            responseDto.setStatusCode(50001);
-//            responseDto.setMessage("Cant connect to magfa! " + url);
-//        }
-//        return ResponseEntity.ok(responseDto);
+
+//        notificationRequestDto.setMobileNo(mobileNo);
+//        return sendBatch(List.of(notificationRequestDto));
+        //        return sendBatch(Collections.singletonList(notificationRequestDto));
+
+        List<String> payload = new ArrayList<>();
+        ResponseDto<String> responseDto = new ResponseDto<>(payload);
+
+        MagfaRequestDto magfaDto =  MagfaRequestDto.builder()
+                .recipients(List.of(mobileNo))
+                .senders(List.of(magfaNumber))
+                .build();
+
+        magfaDto.setMessages(List.of(notificationRequestDto.getMessage()));
+        MagfaResponseDto magfaResponseDto = magfaFeignClient.send(magfaDto);
+        MagfaMessageDto magfaMessageDto;
+        if (magfaResponseDto != null && magfaResponseDto.getMessages() != null) {
+            magfaMessageDto = magfaResponseDto.getMessages().get(0);
+            payload.add(magfaMessageDto.getId() + "");
+        }
+        MAGFA_LOGGER.debug("#magfaDto1: " + magfaResponseDto);
+        if (magfaResponseDto != null) {
+            responseDto.setStatusCode(magfaResponseDto.getStatus());
+            if (magfaResponseDto.getStatus() == 0)
+                responseDto.setMessage("موفق");
+        } else {
+            responseDto.setStatusCode(50001);
+            responseDto.setMessage("Cant connect to magfa! " + url);
+        }
+        return responseDto;
 
     }
 
+    @LoggableHTTP
     @PostMapping("/notification")
-    public ResponseEntity<ResponseDto<MagfaMessageDto>> sendBatch(@RequestBody List<NotificationRequestDto> notificationRequestDtos) { //, @QueryParam("provider") String provider
+    public ResponseDto<MagfaMessageDto> sendBatch(@RequestBody List<NotificationRequestDto> notificationRequestDtos) { //, @QueryParam("provider") String provider
         log.info("#sendBatch to MAGFA-> notificationRequestDtos = " + notificationRequestDtos);
 //        MAGFA_LOGGER.info("mobileNo = " + notificationRequestDto.getMobilesMessages() + ", notificationRequestDto = " + notificationRequestDto);
 
@@ -150,9 +155,8 @@ public class NotificationController {
 
         MAGFA_LOGGER.debug("#magfaResponseDto: " + magfaResponseDto);
         if (magfaResponseDto.getMessages() != null) {
-            for (MagfaMessageDto magfaMessageDto : magfaResponseDto.getMessages()) {
-                payload.add(magfaMessageDto); // ???
-            }
+            // ???
+            payload.addAll(magfaResponseDto.getMessages());
             responseDto.setStatusCode(magfaResponseDto.getStatus());
             if (magfaResponseDto.getStatus() == 0)
                 responseDto.setMessage("موفق");
@@ -160,7 +164,7 @@ public class NotificationController {
             responseDto.setStatusCode(50001);
             responseDto.setMessage("Cant connect to magfa! " + url);
         }
-        return ResponseEntity.ok(responseDto);
+        return responseDto;
     }
 
 //    @GetMapping("send")

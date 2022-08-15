@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <!--    defines the home address for log files-->
-    <property name="HOME_LOG" value="d:/logs/"/>
+    <property name="HOME_LOG" value="d:/logs/Notification-ms"/>
 
     <!--    to write logs in console-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -19,7 +19,7 @@
     <appender name="ROOT" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_LOG}/root.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>logs/archived/root.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>${HOME_LOG}/archived/root.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <!-- each archived file, size max 10MB -->
             <maxFileSize>10MB</maxFileSize>
             <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
@@ -35,6 +35,49 @@
     <logger name="ROOT" level="INFO" additivity="false">
         <appender-ref ref="ROOT"/>
     </logger>
+
+
+<!--    <appender name="kafkafile" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <file>${HOME_LOG}/kafka/kafka.log</file>-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
+<!--            <fileNamePattern>${HOME_LOG}/archived/kafka.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>-->
+<!--            &lt;!&ndash; each archived file, size max 10MB &ndash;&gt;-->
+<!--            <maxFileSize>40000KB</maxFileSize>-->
+<!--            &lt;!&ndash; total size of all archive files, if total size > 20GB, it will delete old archived file &ndash;&gt;-->
+<!--            <totalSizeCap>20GB</totalSizeCap>-->
+<!--            &lt;!&ndash; 60 days to keep &ndash;&gt;-->
+<!--            <maxHistory>60</maxHistory>-->
+<!--        </rollingPolicy>-->
+<!--        <encoder>-->
+<!--            <pattern>%d{yyyy-MM-dd HH:mm:ss:SSS} [%-5p]  [%-70.70t] [%-25.25c{1}:%-4L] [%-25.25M] &ndash;&gt; %m%n</pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
+<!--    <logger name="kafkaLogger" level="info" additivity="false">-->
+<!--        <appender-ref ref="kafkafile"/>-->
+<!--    </logger>-->
+
+
+    <appender name="httpfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG}/http/notification-http.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${HOME_LOG}/archived/notification-http.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>40000KB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss:SSS} [%-5p]  [%-70.70t] [%-25.25c{1}:%-4L] [%-25.25M] --> %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="httpLogger" level="info" additivity="false">
+        <appender-ref ref="httpfile"/>
+    </logger>
+
+
 
     <!--    magfa logger-->
     <appender name="magfa" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -76,25 +119,7 @@
         <appender-ref ref="rahyab"/>
     </logger>
 
-    <!--    HTTP Request Response logger-->
-    <appender name="http" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${HOME_LOG}/http/req_res.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${HOME_LOG}/archived/req_res.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <!-- each archived file, size max 10MB -->
-            <maxFileSize>10MB</maxFileSize>
-            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
-            <totalSizeCap>20GB</totalSizeCap>
-            <!-- 60 days to keep -->
-            <maxHistory>60</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-        </encoder>
-    </appender>
-    <logger name="http" level="INFO" additivity="false">
-        <appender-ref ref="http"/>
-    </logger>
+
 
     <!--    defines what log in root-->
     <root level="INFO">

@@ -2,10 +2,29 @@ package ir.bki.notificationservice.log;
 
 public enum LoggerNamesEnum {
 
-    ROOT("ROOT"),
-    HTTP("http"),
-    RAHYAB("rahyab"),
-    MAGFA("magfa");
+
+    kafka("kafkaLogger"),
+
+    http("httpLogger"),
+
+//    ibm("ibm"),
+
+//    redis("redis"),
+
+    magfa("magfa");
+
+
+//    notificationApi("notificationApi");
+//
+//    root("root");  ??
+//
+//    stacktrace("stacktrace"); ??
+
+
+
+
+
+
 
     String desc;
 

@@ -13,8 +13,8 @@
         </layout>
     </appender>
 
-    <appender name="OTP" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${HOME_LOG}/OTP/OTP.log</file>
+    <appender name="OTP-ms" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG}/OTP-ms/OTP.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${HOME_LOG}/archived/OTP.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <!-- each archived file, size max 10MB -->
@@ -30,13 +30,13 @@
     </appender>
 
 
-    <logger name="OTP" level="info" additivity="false">
-        <appender-ref ref="OTP"/>
+    <logger name="OTP-ms" level="info" additivity="false">
+        <appender-ref ref="OTP-ms"/>
     </logger>
 
     <root level="info">
         <appender-ref ref="ConsoleAppender"/>
-        <appender-ref ref="OTP"/>
+        <appender-ref ref="OTP-ms"/>
     </root>
 
 
