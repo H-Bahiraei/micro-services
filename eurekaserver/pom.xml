@@ -35,6 +35,16 @@
             <version>3.21.4</version>
             <scope>compile</scope>
         </dependency>
+        <!-- for get warFile-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -80,5 +90,7 @@
             </plugin>
         </plugins>
     </build>
+    <!-- for get warFile-->
+    <packaging>war</packaging>
 
 </project>

@@ -2,15 +2,31 @@ spring:
   application.name: otp-service
   port: 8080
 
-  redis.host: localhost
-  redis.port: 6379
+#  redis.host: localhost
+#  localhostredis.port: 6379
 
   datasource.url: jdbc:h2:mem:test
   h2.console.enabled: true
   datasource.username: sa
   datasource.password: sa
+  redis:
+    host: 10.0.84.140
+    port: 6379
+    username: Microotp
+    password: fgdwefwefeufgciewghwgwe7657865gcs77gjhgjhj
+    timeout: 60000
+    database: 6
+  elasticsearch:
+    uris: https://lf-uat.bki.ir:9200
 
 notification-service:
   url: http://localhost:8082
   path: /v1/sms
 
+logging:
+  level:
+    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: WARN
+management:
+  health:
+    elasticsearch:
+      enabled: true

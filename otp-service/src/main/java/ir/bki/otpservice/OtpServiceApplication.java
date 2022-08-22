@@ -2,6 +2,7 @@ package ir.bki.otpservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
@@ -15,7 +16,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @SpringBootApplication
 @EnableEurekaClient
 @EnableFeignClients
-public class OtpServiceApplication {
+public class OtpServiceApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(OtpServiceApplication.class, args);

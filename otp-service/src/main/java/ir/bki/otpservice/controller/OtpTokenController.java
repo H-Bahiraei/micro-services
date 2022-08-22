@@ -147,7 +147,7 @@ public class OtpTokenController {
 
             responseDto.setReqParams(reqParams);
             responseDto.setHttpStatus(HttpStatus.CREATED.value());
-            responseDto.setMessage("code is sended");
+            responseDto.setMessage("code is sent");
             responseDto.setStatus(0L);
             responseDtoService.createRdtoIndex(responseDto);
             responseDto.setElapsedTime(System.currentTimeMillis() - start);
